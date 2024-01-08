@@ -1,0 +1,280 @@
+syntax = "proto3";
+package xproto;
+option csharp_namespace = "Ddxy.Protocol";
+
+import "common.proto";
+
+enum BattleActionType {
+  BattleActionType_Unkown = 0;
+  // 技能
+  BattleActionType_Skill = 1;
+  // 道具
+  BattleActionType_Prop = 2;
+  // 召唤
+  BattleActionType_Summon = 3;
+  // 逃跑
+  BattleActionType_RunAway = 4;
+  // 保护
+  BattleActionType_Protect = 5;
+  // 捕捉
+  BattleActionType_Catch = 6;
+  // 召还
+  BattleActionType_SummonBack = 7;
+}
+
+enum BattleAttackType {
+  BattleAttackType_Unkown = 0;
+  // 伤害
+  BattleAttackType_Hurt = 1;
+  // 治疗
+  BattleAttackType_Hp = 2;
+  // 扣蓝
+  BattleAttackType_Mp = 3;
+  // 吸血
+  BattleAttackType_Suck = 4;
+  // 扣血扣蓝
+  BattleAttackType_HurtMp = 5;
+  // 回血回蓝
+  BattleAttackType_HpMp = 6;
+}
+
+enum BattleResponseType {
+  // 无响应
+  BattleResponseType_None = 0;
+  // 防御
+  BattleResponseType_Defend = 1;
+  // 闪避
+  BattleResponseType_Dodge = 2;
+  // 暴击
+  BattleResponseType_Crits = 3;
+  // 被抓
+  BattleResponseType_Catched = 4;
+  // 不能被抓
+  BattleResponseType_NoCatch = 5;
+  // 捕捉失败
+  BattleResponseType_CatchFail = 6;
+  // 保护
+  BattleResponseType_Protect = 7;
+  // 被保护
+  BattleResponseType_BeProtected = 8;
+  // 召还
+  BattleResponseType_SummonBack = 9;
+  // 召唤
+  BattleResponseType_Summon = 10;
+  // 召唤失败
+  BattleResponseType_SummonFail = 11;
+  // 破防
+  BattleResponseType_PoFang = 12;
+}
+// 孩子信息
+message BattleChildObjectData {
+  // 外观
+  int32 shape = 1;
+  // 名字
+  string name = 2;
+  // 初始动画
+  string aniName = 3;
+}
+message BattleObjectData {
+  uint32 onlyId = 1;
+  LivingThingType type = 2;
+  uint32 res = 3;
+  string name = 4;
+  int32 pos = 5;
+  float hp = 6;
+  float hpMax = 7;
+  uint32 mp = 8;
+  uint32 mpMax = 9;
+  uint32 relive = 11;
+  uint32 level = 12;
+  int32 petColor = 13;
+  uint32 color1 = 14;
+  uint32 color2 = 15;
+  repeated SkillId skills = 16;
+  SkillId lastSkill = 17; //上次使用的技能
+  MapObjectEquipData Weapon = 18;
+  MapObjectEquipData wing = 19;// 佩戴的翅膀
+
+  bool  isBaoBao = 20; //是否为宝宝
+  bool  isFight = 21; //当前是否上阵
+  uint32 ownerId = 22; //pet所属的角色的onlyId
+  uint32 instId = 23; //实例id
+  uint32 cfgId = 24; //配置id
+  repeated int32 skins = 25; //皮肤外观配置
+  int32 bianshen = 44; // 变身ID
+  BattleChildObjectData child = 45; // 孩子信息
+  uint32 vipLevel = 46; // VIP等级
+  uint32 qiegeLevel = 47; // 切割等级
+  bool  isPs = 48; // 带宠物配饰套装效果？
+  uint32 shenzhiliHurtLevel = 49; // 神之力真是伤害等级
+}
+
+message BattleTeamData {
+  uint32 camp = 1;
+  repeated BattleObjectData list = 2;
+  // 星阵ID
+  int32 xingzhenId = 3;
+  // 星阵等级
+  int32 xingzhenLevel = 4;
+}
+
+message BattleAttackData {
+  // 目标onlyid
+  uint32 onlyId = 1;
+  BattleAttackType type = 2;
+  //  对应type 伤害量 治疗量
+  int32 value = 3;
+  BattleResponseType response = 4;
+  bool  dead = 5;
+  // 剩余生命值
+  float hp = 6;
+  // 剩余法力值
+  uint32 mp = 7;
+  repeated uint32 buffs = 8;
+  // 参数9 可用于保护id等
+  uint32 param = 9;
+  // 动作后续
+  BattleAttackAfter after = 10;
+
+  // 是否为分花拂柳
+  bool fenHuaFuLiu = 11;
+  // 是否为分裂攻击
+  bool fenLieGongJi = 12;
+  // 是否为隔山打牛
+  bool geShanDaNiu = 13;
+  // 是否为天降脱兔
+  bool tianJiangTuoTu = 14;
+  // 是否为幻影离魂
+  bool huanYingLiHun = 15;
+}
+
+message BattleAttackAfter {
+  // BattlePetEnterEffect petEnter = 1;
+  BattlePetEnterData petEnter = 2;
+  BattleProtectData protect = 3;
+  BattleLianJiData lianJi = 4;
+  BattleNiePanData niePan = 5;
+  BattleShanXianData shanXian = 6;
+  BattleGeShanData geShan = 7;
+  BattleZuoNiaoShouSanData zuoNiaoShouSan = 8;
+  BattleNiePanData niePan1 = 9;
+}
+
+message BattleProtectData
+{
+  uint32 RoleId = 1;
+  float hurt = 2;
+  bool dead = 3;
+  float hp = 4;
+  uint32 mp = 5;
+  BattleResponseType respone = 6;
+}
+
+//message BattlePetEnterEffect {
+//  // SkillId skillId = 1;
+//  repeated BattlePetEnterEffectBuffItem buffs = 2;
+//}
+//
+//message BattlePetEnterEffectBuffItem {
+//  // 技能id
+//  SkillId skillId = 1;
+//  repeated uint32 ids = 2;
+//}
+
+message BattlePetEnterData {
+  // SkillId skillId = 1;
+  repeated BattlePetEnterBuffData buffs = 2;
+}
+
+message BattlePetEnterBuffData {
+  SkillId skillId = 1;
+  repeated uint32 ids = 2;
+}
+
+message BattleLianJiData {
+  repeated float hurts = 1;
+}
+
+message BattleNiePanData {
+  float hp = 1;
+  uint32 mp = 2;
+  repeated uint32 buffs = 3;
+}
+
+message BattleShanXianData {
+  uint32 onlyId = 1;
+  float hp = 2;
+  uint32 mp = 3;
+  int32 pos = 4;
+  repeated uint32 buffs = 5;
+}
+
+message BattleGeShanData {
+  uint32 roleId = 1;
+  int32 value = 2;
+  BattleResponseType response = 3;
+  bool  dead = 5;
+  // 剩余生命值
+  float hp = 6;
+  // 剩余法力值
+  uint32 mp = 7;
+}
+
+message BattleZuoNiaoShouSanData {
+  repeated BattleZuoNiaoShouSanItem list = 1;
+  uint32 petOnlyId = 2;
+}
+
+message BattleZuoNiaoShouSanItem {
+  uint32 onlyId = 1;
+  float addHp = 2;
+  float hp = 3;
+  uint32 addMp = 4;
+  uint32 mp = 5;
+}
+// 孩子说话信息
+message BattleChildTalk {
+  // 动作
+  string aniName = 1;
+  // 文字
+  string text = 2;
+}
+message BattleActionData {
+  // 行动者的onlyid
+  uint32 onlyId = 1;
+  // 行动类型
+  BattleActionType type = 2;
+  // 随action改变
+  uint32 actionId = 3;
+  // 战斗前的效果
+  BattleActionBefore before = 4;
+  // 效果影响多少目标
+  repeated BattleAttackData targets = 5;
+  // buff列表
+  repeated uint32 buffs = 6;
+  // 孩子技能--说话
+  repeated BattleChildTalk childTalks = 7;
+  // 释放技能颜色
+  int32 skillColor = 8;
+}
+
+message BattleActionBefore
+{
+  // 化无
+  bool huaWu = 1;
+  // 悬刃
+  float xuanRen = 2;
+  // 遗患
+  float yiHuan = 3;
+
+  float hp = 4;
+  uint32 mp = 5;
+  bool dead = 6;
+}
+
+message BattleStageEffect {
+  uint32 role = 1;
+  repeated uint32 roles = 2;
+  SkillId skill = 3;
+  float hurt = 4;
+}

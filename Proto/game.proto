@@ -1,0 +1,3373 @@
+syntax = "proto3";
+package xproto;
+option csharp_namespace = "Ddxy.Protocol";
+
+import "common.proto";
+import "battle.proto";
+
+enum GameCmd {
+  GameCmd_Unkown = 0;
+
+  // 心跳
+  GameCmd_C2S_HeartBeat = 1;
+  GameCmd_S2C_HeartBeat = 2;
+
+  // 错误
+  GameCmd_S2C_Error = 3;
+  // 通知消息
+  GameCmd_S2C_Notice = 4;
+  // 跑马灯消息
+  GameCmd_S2C_ScreenNotice = 5;
+  // Npc消息
+  GameCmd_S2C_NpcNotice = 6;
+  // 网络断开错误码
+  GameCmd_S2C_NetError = 7;
+
+  // 监禁时间
+  GameCmd_S2C_PrisonTime = 10;
+  // 杀人香剩余时间
+  GameCmd_S2C_IncenseTime = 11;
+  GameCmd_C2S_IncenseStop = 12;
+  // 游戏进入后台
+  GameCmd_C2S_AppPause = 13;
+  // 提前释放
+  GameCmd_C2S_PrisonFree = 14;
+  // 开启/关闭 闪现顺序
+  GameCmd_C2S_ShanXianOrder = 15;
+  GameCmd_S2C_ShanXianOrder = 16;
+  // 获取礼包
+  GameCmd_C2S_LiBao = 17;
+  // 兑换可选无价配饰套
+  GameCmd_C2S_GetWuJiaTao = 18;
+  // 兑换可选无价配饰部件
+  GameCmd_C2S_GetWuJiaBuJian = 19;
+  // 兑换可选终极技能书
+  GameCmd_C2S_GetJiNengShu = 20;
+  // 兑换可选二级五行材料
+  GameCmd_C2S_GetWuXingCaiLiao = 21;
+
+  // 玩家准备就绪后，通知服务器进入游戏
+  GameCmd_C2S_EnterServer = 30;
+  // 服务器先推送角色相关数据，最后才推送EnterServer
+  GameCmd_S2C_EnterServer = 31;
+  // 角色基础信息
+  GameCmd_S2C_RoleInfo = 32;
+  // 角色经验等级改变
+  GameCmd_S2C_RoleExp = 33;
+  // 角色货币改变
+  GameCmd_S2C_RoleMoney = 34;
+  // 角色的武器改变
+  GameCmd_S2C_RoleWeapon = 35;
+  // 角色翅膀改变
+  GameCmd_S2C_RoleWing = 36;
+
+  // 升级技能
+  GameCmd_C2S_SkillUpdate = 50;
+  GameCmd_S2C_SkillUpdate = 51;
+  // 修改角色昵称
+  GameCmd_C2S_ChangeName = 52;
+  GameCmd_S2C_ChangeName = 53;
+  // 修改种族和转生
+  GameCmd_C2S_ChangeRace = 54;
+  GameCmd_S2C_ChangeRace = 55;
+  GameCmd_C2S_Relive = 56;
+  GameCmd_S2C_Relive = 57;
+  //GameCmd_C2S_ReliveList = 58;
+  //GameCmd_S2C_ReliveList = 59;
+  // 变色
+  GameCmd_C2S_ChangeColor = 60;
+  GameCmd_S2C_ChangeColor = 61;
+  // 等级奖励
+  GameCmd_S2C_LevelRewardList = 62;
+  GameCmd_C2S_LevelRewardGet = 63;
+  // 获取新手礼包
+  GameCmd_C2S_XinShouGiftGet = 64;
+  // 提升修炼等级
+  GameCmd_C2S_UpgradeXlLevel = 65;
+  GameCmd_S2C_UpgradeXlLevel = 66;
+  // 设置/修改安全锁密码
+  GameCmd_C2S_SafePassword = 67;
+  GameCmd_S2C_SafePassword = 68;
+  // 锁定，解锁安全锁
+  GameCmd_C2S_SafeLock = 69;
+  GameCmd_S2C_SafeLock = 70;
+  // 推广人
+  GameCmd_C2S_BindSpread = 71;
+  GameCmd_S2C_BindSpread = 72;
+  // 我推广的人
+  GameCmd_C2S_Spreads = 73;
+  GameCmd_S2C_Spreads = 74;
+  // 下单
+  GameCmd_C2S_Order = 80;
+  GameCmd_S2C_Order = 81;
+  // 设置自动技能
+  GameCmd_C2S_AutoSkill = 82;
+  GameCmd_S2C_AutoSkill = 83;
+  // 检查新手礼包
+  GameCmd_C2S_XinShouGiftCheck = 84;
+  GameCmd_S2C_XinShouGiftCheck = 85;
+  // 进入充值页
+  GameCmd_C2S_EnterChargeUI = 86;
+  GameCmd_S2C_EnterChargeUI = 87;
+  //物品商店--进入
+  GameCmd_C2S_EnterItemShop = 88;
+  GameCmd_S2C_EnterItemShop = 89;
+  //物品商店--下单购买
+  GameCmd_C2S_OrderItemShop = 90;
+  GameCmd_S2C_OrderItemShop = 91;
+
+  // 下发背包列表
+  GameCmd_S2C_ItemList = 100;
+  // 获得物品及其数量
+  GameCmd_S2C_ItemAdd = 101;
+  // 减少物品及其数量
+  GameCmd_C2S_ItemDel = 102;
+  GameCmd_S2C_ItemDel = 103;
+  // 使用物品
+  GameCmd_C2S_ItemUse = 104;
+  // 道具合成
+  GameCmd_C2S_ItemCompose = 105;
+  // 五行熔炼
+  GameCmd_C2S_ItemFusion = 106;
+  // 仓库操作
+  GameCmd_C2S_RepoUpdate = 110;
+  GameCmd_S2C_RepoUpdate = 111;
+  // 高级藏宝图
+  GameCmd_C2S_LotteryOpen = 120;
+  GameCmd_S2C_LotteryOpen = 121;
+
+  // 查询角色充值奖励
+  GameCmd_C2S_RolePays = 150;
+  GameCmd_S2C_RolePays = 151;
+  // 领取累计充值奖励
+  GameCmd_C2S_TotalPayRewards = 152;
+  GameCmd_S2C_TotalPayRewards = 153;
+  GameCmd_C2S_TotalPayRewardsReset = 159;
+  // 领取今日充值奖励
+  GameCmd_C2S_DailyPayRewards = 154;
+  GameCmd_S2C_DailyPayRewards = 155;
+  GameCmd_C2S_DailyPayRewardsReset = 156;
+  // 领取首充奖励
+  GameCmd_C2S_FirstPayReward = 157;
+  GameCmd_S2C_FirstPayReward = 158;
+  // 领取额外累计充值奖励
+  GameCmd_C2S_EwaiPayRewards = 160;
+  GameCmd_S2C_EwaiPayRewards = 161;
+  GameCmd_C2S_EwaiPayRewardsReset = 162;
+  
+
+  // 回收物品
+  GameCmd_C2S_Recover = 170;
+  GameCmd_S2C_Recover = 171;
+
+  // 下发装备列表
+  GameCmd_S2C_EquipList = 200;
+  // 获得一件装备
+  GameCmd_S2C_EquipAdd = 201;
+  // 删除一件装备
+  GameCmd_S2C_EquipDel = 202;
+  // 装备信息
+  GameCmd_S2C_EquipInfo = 203;
+  // 装备升级
+  GameCmd_C2S_EquipUpgrade = 204;
+  // 装备镶嵌
+  GameCmd_C2S_EquipInlay = 205;
+  // 装备炼化
+  GameCmd_C2S_EquipRefine = 206;
+  // 装备重铸
+  GameCmd_C2S_EquipRecast = 207;
+  // 丢弃装备
+  GameCmd_C2S_EquipDelete = 208;
+  // 神兵/仙器合成
+  GameCmd_C2S_EquipCombine = 209;
+  GameCmd_S2C_EquipCombine = 210;
+  // 炼化和重铸的时候，请求和下发预览数据
+  GameCmd_C2S_EquipProperty = 211;
+  GameCmd_S2C_EquipProperty = 212;
+  // 炼化和重铸的时候，请求和下发预览数据
+  GameCmd_C2S_EquipPropertyList = 213;
+  GameCmd_S2C_EquipPropertyList = 214;
+  // 分享装备
+  GameCmd_C2S_ShareEquipInfo = 220;
+  GameCmd_S2C_ShareEquipInfo = 221;
+  // 定制装备
+  GameCmd_C2S_EquipDingZhi = 222;
+  // 装备炼化（多次）
+  GameCmd_C2S_EquipRefineTimes = 223;
+  // 装备升星
+  GameCmd_C2S_EquipStarUpgrade = 224;
+  // 装备升阶
+  GameCmd_C2S_EquipGradeUpgrade = 225;
+  // 定制配饰
+  GameCmd_C2S_OrnamentDingZhi = 226;
+
+  // 配饰列表
+  GameCmd_S2C_OrnamentList = 250;
+  // 获得一件配饰
+  GameCmd_S2C_OrnamentAdd = 251;
+  // 配饰信息变更
+  GameCmd_S2C_OrnamentInfo = 252;
+  // 删除一件配饰
+  GameCmd_S2C_OrnamentDel = 253;
+  // 丢弃配饰
+  GameCmd_C2S_OrnamentDel = 254;
+  // 重铸
+  GameCmd_C2S_OrnamentProperty = 255;
+  GameCmd_S2C_OrnamentProperty = 256;
+  GameCmd_C2S_OrnamentRecast = 257;
+  // 分解
+  GameCmd_C2S_OrnamentDecompose = 258;
+  GameCmd_S2C_OrnamentDecompose = 259;
+  // 鉴定
+  GameCmd_C2S_OrnamentAppraisal = 260;
+  // 分享配饰
+  GameCmd_C2S_ShareOrnamentInfo = 261;
+  GameCmd_S2C_ShareOrnamentInfo = 262;
+  // 玩家操作次数
+  GameCmd_C2S_GetOperateTimes = 263;
+  GameCmd_S2C_GetOperateTimes = 264;
+
+  // 宠物配饰--列表
+  GameCmd_S2C_PetOrnamentList = 271;
+  // 宠物配饰--添加
+  GameCmd_S2C_PetOrnamentAdd = 272;
+  // 宠物配饰--信息
+  GameCmd_S2C_PetOrnamentInfo = 273;
+  // 宠物配饰--删除
+  GameCmd_S2C_PetOrnamentDel = 274;
+  // 宠物配饰--分解
+  GameCmd_C2S_PetOrnamentFenJie = 275;
+  GameCmd_S2C_PetOrnamentFenJie = 276;
+  // 宠物配饰--打造
+  GameCmd_C2S_PetOrnamentDaZhao = 277;
+  GameCmd_S2C_PetOrnamentDaZhao = 278;
+  // 宠物配饰--装备
+  GameCmd_C2S_PetOrnamentEquip = 279;
+  // 宠物配饰--卸载
+  GameCmd_C2S_PetOrnamentUnEquip = 280;
+  // 宠物配饰--锁定
+  GameCmd_C2S_PetOrnamentLock = 281;
+
+  // 下发方案列表, 只下发id,name,active
+  GameCmd_S2C_SchemeList = 300;
+  // 新增方案或者重发方案数据
+  GameCmd_S2C_SchemeInfo = 301;
+  // 等级变化后，引起潜能和属性的变化
+  GameCmd_S2C_SchemeAttrs = 302;
+  // 切换方案
+  GameCmd_C2S_SchemeActive = 303;
+  GameCmd_S2C_SchemeActive = 304;
+  // 属性加点
+  GameCmd_C2S_SchemeAddPoint = 305;
+  GameCmd_S2C_SchemeAddPoint = 306;
+  // 重置属性加点
+  GameCmd_C2S_SchemeResetAddPoint = 307;
+  // 修炼加点
+  GameCmd_C2S_SchemeXiuLian = 308;
+  GameCmd_S2C_SchemeXiuLian = 309;
+  // 重置修炼点
+  GameCmd_C2S_SchemeResetXlPoint = 310;
+  // 穿戴/脱下装备
+  GameCmd_C2S_SchemeEquip = 311;
+  GameCmd_S2C_SchemeEquip = 312;
+  // 穿戴/脱下配饰
+  GameCmd_C2S_SchemeOrnament = 313;
+  GameCmd_S2C_SchemeOrnament = 314;
+  // 修改名称
+  GameCmd_C2S_SchemeName = 315;
+  GameCmd_S2C_SchemeName = 316;
+  // 使用回梦丹
+  //  GameCmd_C2S_SchemeResetFixPreview = 317;
+  //  GameCmd_S2C_SchemeResetFixPreview = 318;
+  GameCmd_C2S_SchemeResetFix = 319;
+  GameCmd_S2C_SchemeResetFix = 320;
+
+  // 皮肤外观
+  GameCmd_C2S_SkinInfo = 330;
+  GameCmd_S2C_SkinInfo = 331;
+
+  // 获取变身信息
+  GameCmd_C2S_BianshenInfo = 340;
+  GameCmd_S2C_BianshenInfo = 341;
+  // 五行升级
+  GameCmd_C2S_BianshenWuxingLevelUp = 342;
+  GameCmd_S2C_BianshenWuxingLevelUp = 343;
+  // 使用变身卡
+  GameCmd_C2S_BianshenUse = 344;
+  GameCmd_S2C_BianshenUse = 345;
+  // 变身还原
+  GameCmd_C2S_BianshenReset = 346;
+
+  // 获取星阵信息
+  GameCmd_C2S_XingzhenInfo = 350;
+  GameCmd_S2C_XingzhenInfo = 351;
+  // 星阵--解锁
+  GameCmd_C2S_XingzhenUnlock = 352;
+  // 星阵--装备
+  GameCmd_C2S_XingzhenUse = 353;
+  // 星阵--升级
+  GameCmd_C2S_XingzhenUpgrade = 354;
+  // 星阵--洗炼
+  GameCmd_C2S_XingzhenRefine = 355;
+  // 星阵--替换
+  GameCmd_C2S_XingzhenReplace = 356;
+  // 星阵--定制
+  GameCmd_C2S_XingzhenDingZhi = 357;
+
+  // 获取孩子信息
+  GameCmd_C2S_ChildInfo = 360;
+  GameCmd_S2C_ChildInfo = 361;
+  // 孩子--领养
+  GameCmd_C2S_ChildAdopt = 362;
+  // 孩子--起名
+  GameCmd_C2S_ChildRename = 363;
+  // 孩子--培养
+  GameCmd_C2S_ChildUpgrade = 364;
+  // 孩子--更换形象
+  GameCmd_C2S_ChildChangeShape = 365;
+  // 孩子--洗炼
+  GameCmd_C2S_ChildRefine = 366;
+  // 孩子--替换
+  GameCmd_C2S_ChildReplace = 367;
+  // 孩子--定制
+  GameCmd_C2S_ChildDingZhi = 368;
+
+  // 转盘--信息
+  GameCmd_C2S_LuckyDrawInfo = 370;
+  GameCmd_S2C_LuckyDrawInfo = 371;
+  // 转盘--抽奖
+  GameCmd_C2S_LuckyDrawTurn = 372;
+  GameCmd_S2C_LuckyDrawTurn = 373;
+  // 转盘--开宝箱
+  GameCmd_C2S_LuckyDrawOpenChest = 374;
+  GameCmd_S2C_LuckyDrawOpenChest = 375;
+
+  // 经验兑换潜能--信息
+  GameCmd_C2S_ExpExchangeInfo = 380;
+  GameCmd_S2C_ExpExchangeInfo = 381;
+  // 经验兑换潜能--兑换
+  GameCmd_C2S_ExpExchange = 382;
+  GameCmd_S2C_ExpExchange = 383;
+
+  // 限时充值排行榜--排行榜信息
+  GameCmd_C2S_LimitChargeRankInfo = 390;
+  GameCmd_S2C_LimitChargeRankInfo = 391;
+  // 限时充值排行榜--领取奖励
+  GameCmd_C2S_LimitChargeRankGiftGet = 392;
+  GameCmd_S2C_LimitChargeRankGiftGet = 393;
+  // 限时等级排行榜--排行榜信息
+  GameCmd_C2S_LimitLevelRankInfo = 394;
+  GameCmd_S2C_LimitLevelRankInfo = 395;
+  // 限时等级排行榜--领取信息
+  GameCmd_C2S_LimitLevelRankGiftGet = 396;
+  GameCmd_S2C_LimitLevelRankGiftGet = 397;
+
+  // 下发宠物列表
+  GameCmd_S2C_PetList = 400;
+  // 宠物升级
+  GameCmd_S2C_PetInfo = 401;
+  // 放生一个宠物
+  GameCmd_C2S_PetDel = 402;
+  GameCmd_S2C_PetDel = 403;
+  // 提示领养初始宠物
+  GameCmd_S2C_PetAdopt = 404;
+  // 玩家领取宠物
+  GameCmd_C2S_PetAdopt = 405;
+  // 激活某个宠物
+  GameCmd_C2S_PetActive = 506;
+  GameCmd_S2C_PetActive = 507;
+  // 宠物洗练属性
+  GameCmd_C2S_PetWash = 508;
+  GameCmd_S2C_PetWash = 509;
+  // 保存宠物的洗练属性
+  GameCmd_C2S_PetSaveWash = 510;
+  // 转生
+  GameCmd_C2S_PetRelive = 512;
+  // 合成
+  GameCmd_C2S_PetCombine = 513;
+  // 解锁技能格
+  GameCmd_C2S_PetUnlock = 514;
+  GameCmd_S2C_PetUnlock = 515;
+  // 学习技能
+  GameCmd_C2S_PetLearnSkill = 516;
+  // 遗忘技能
+  GameCmd_C2S_PetForgetSkill = 518;
+  // 锁定技能
+  GameCmd_C2S_PetLockSkill = 520;
+  GameCmd_S2C_PetLockSkill = 521;
+  // ss技能
+  GameCmd_C2S_PetChangeSsSkill = 522;
+  // 飞升
+  GameCmd_C2S_PetFly = 524;
+  // 加点
+  GameCmd_C2S_PetAddPoint = 525;
+  GameCmd_S2C_PetAddPoint = 526;
+  // 修炼
+  GameCmd_C2S_PetRefine = 527;
+  GameCmd_S2C_PetRefine = 528;
+  // 分享宠物
+  GameCmd_C2S_SharePetInfo = 530;
+  GameCmd_S2C_SharePetInfo = 531;
+  // 宠物改名
+  GameCmd_C2S_PetName = 532;
+  GameCmd_S2C_PetName = 533;
+  // 宠物闪现支援顺序
+  GameCmd_C2S_PetChangeShanXianOrder = 534;
+  GameCmd_S2C_PetShanXianOrderList = 535;
+  // 获取未保存的宠物洗练数据
+  GameCmd_C2S_PetWashPreview = 536;
+  GameCmd_S2C_PetWashPreview = 537;
+  // 设置自动技能
+  GameCmd_C2S_PetAutoSkill = 538;
+  GameCmd_S2C_PetAutoSkill = 539;
+  // 觉醒突破
+  GameCmd_C2S_PetJxTuPo = 540;
+  // 分享宠物配饰
+  GameCmd_C2S_SharePetOrnamentInfo = 541;
+  GameCmd_S2C_SharePetOrnamentInfo = 542;
+
+  // 下发坐骑列表
+  GameCmd_S2C_MountList = 550;
+  // 获得一个新坐骑
+  GameCmd_S2C_MountInfo = 551;
+  // 坐骑乘骑
+  GameCmd_C2S_MountActive = 552;
+  GameCmd_S2C_MountActive = 553;
+  // 洗练
+  GameCmd_C2S_MountWash = 554;
+  GameCmd_S2C_MountWash = 555;
+  GameCmd_C2S_MountSaveWash = 556;
+  // 管制宠物和取消管制宠物
+  GameCmd_C2S_MountControl = 557;
+  GameCmd_S2C_MountControl = 558;
+  // 坐骑升级技能
+  GameCmd_C2S_MountUpgradeSkill = 559;
+  GameCmd_S2C_MountUpgradeSkill = 560;
+  // 获取未保存的坐骑洗练数据
+  GameCmd_C2S_MountWashPreview = 561;
+  GameCmd_S2C_MountWashPreview = 562;
+  // 坐骑解锁
+  GameCmd_C2S_MountUnlock = 563;
+  // 坐骑定制
+  GameCmd_C2S_MountDingZhi = 564;
+
+  // 伙伴
+  GameCmd_S2C_PartnerList = 600;
+  // 新增或更新
+  GameCmd_S2C_PartnerInfo = 601;
+  // 出战和休息
+  GameCmd_C2S_PartnerPos = 602;
+  // 这里下发激活的Partner Id列表
+  GameCmd_S2C_PartnerActiveList = 603;
+  // 传功, 成功后会推Info
+  GameCmd_C2S_PartnerExchange = 604;
+  // 转生, 成功后会推Info
+  GameCmd_C2S_PartnerRelive = 605;
+
+  // 下发队伍数据
+  GameCmd_S2C_TeamData = 700;
+  // 创建队伍, 创建成功后推送TeamData
+  GameCmd_C2S_TeamCreate = 701;
+  // 申请加入队伍, 申请成功后直接推送TeamData
+  GameCmd_C2S_TeamApplyJoin = 702;
+  // 给队长下发所有的加入申请
+  GameCmd_C2S_TeamJoinApplyList = 703;
+  GameCmd_S2C_TeamJoinApplyList = 704;
+  // 队长在线的时候，如果有人申请加入，会及时下发
+  GameCmd_S2C_TeamJoinApplyAdd = 705;
+  // 队长正常处理了请求, 提醒前端删除请求
+  GameCmd_S2C_TeamJoinApplyDel = 706;
+  // 队长对加入申请进行处理, 如果同意，会给申请者立马发送TeamData
+  GameCmd_C2S_TeamHandleJoinApply = 707;
+  // 退出队伍, 如果是队长，则会解散队伍
+  GameCmd_C2S_TeamExit = 708;
+  // 队长踢人
+  GameCmd_C2S_TeamKickout = 709;
+  // 队伍中有人上线
+  GameCmd_S2C_TeamPlayerOnline = 710;
+  // 队伍中有人离线
+  GameCmd_S2C_TeamPlayerOffline = 711;
+  // 队伍中有人修改了信息, 全量更新
+  GameCmd_S2C_TeamPlayerUpdate = 712;
+  // 一键加入队伍
+  GameCmd_C2S_TeamFindAndApplyJoin = 713;
+  // 队长请求某个队员做队长
+  GameCmd_C2S_ReqTeamHandOver = 714;
+  // 被邀请的队员确认接管队伍
+  GameCmd_S2C_TeamHandOver = 715;
+  GameCmd_C2S_TeamHandOver = 716;
+  // 请求队伍列表
+  GameCmd_C2S_TeamList = 720;
+  GameCmd_S2C_TeamList = 721;
+  // 邀请入队
+  GameCmd_C2S_TeamInvite = 722;
+  GameCmd_S2C_TeamInvite = 723;
+  GameCmd_C2S_TeamHandleInvite = 724;
+  // 获取队伍数据
+  GameCmd_C2S_TeamFind = 725;
+  GameCmd_S2C_TeamFind = 726;
+  // 发布招募
+  GameCmd_C2S_TeamRecruit = 727;
+  // 切换队伍目标
+  GameCmd_C2S_TeamTarget = 728;
+  GameCmd_S2C_TeamTarget = 729;
+  // 申请成为队长
+  GameCmd_C2S_TeamApplyLeader = 730;
+  GameCmd_S2C_TeamApplyLeader = 731;
+  GameCmd_C2S_TeamHandleApplyLeader = 732;
+  // 暂离队伍
+  GameCmd_C2S_TeamLeave = 733;
+  GameCmd_S2C_TeamLeave = 734;
+  // 归队
+  GameCmd_C2S_TeamBack = 735;
+  GameCmd_S2C_TeamBack = 736;
+  // 邀请归队
+  GameCmd_C2S_TeamBackInvite = 737;
+  GameCmd_S2C_TeamBackInvite = 738;
+
+  // 好友列表
+  GameCmd_C2S_FriendList = 750;
+  GameCmd_S2C_FriendList = 751;
+  GameCmd_S2C_FriendAdd = 752;
+  GameCmd_S2C_FriendDel = 753;
+  GameCmd_S2C_FriendApplyList = 754;
+  GameCmd_S2C_FriendApplyAdd = 755;
+  GameCmd_S2C_FriendApplyDel = 756;
+  GameCmd_C2S_FriendApply = 757;
+  GameCmd_C2S_FriendDel = 758;
+  GameCmd_C2S_FriendSearch = 759;
+  GameCmd_S2C_FriendSearch = 760;
+  GameCmd_C2S_FriendHandleApply = 761;
+  GameCmd_C2S_FriendInfo = 762;
+  GameCmd_S2C_FriendInfo = 763;
+
+  // 下发帮派数据
+  GameCmd_S2C_SectData = 800;
+  GameCmd_C2S_SectList = 801;
+  GameCmd_S2C_SectList = 802;
+  GameCmd_C2S_SectMemberList = 803;
+  GameCmd_S2C_SectMemberList = 804;
+  GameCmd_C2S_SectCreate = 805;
+  GameCmd_C2S_SectApplyJoin = 806;
+  GameCmd_C2S_SectJoinApplyList = 807;
+  GameCmd_S2C_SectJoinApplyList = 808;
+  GameCmd_S2C_SectJoinApplyAdd = 809;
+  GameCmd_S2C_SectJoinApplyDel = 810;
+  GameCmd_C2S_SectHandleJoinApply = 811;
+  GameCmd_C2S_SectExit = 812;
+  GameCmd_C2S_SectKickout = 813;
+  GameCmd_S2C_SectMemberLeave = 817;
+  GameCmd_C2S_SectContrib = 818;
+  GameCmd_C2S_SectAppoint = 819;
+  GameCmd_S2C_SectAppoint = 820;
+  GameCmd_C2S_SectSilent = 822;
+  GameCmd_S2C_SectSilent = 823;
+  GameCmd_C2S_SectChangeDesc = 824;
+  GameCmd_S2C_SectChangeDesc = 825;
+
+  // 聊天
+  GameCmd_C2S_Chat = 900;
+  GameCmd_S2C_Chat = 901;
+  GameCmd_C2S_ChatSilent = 902;
+  GameCmd_S2C_ChatSilent = 903;
+  GameCmd_C2S_ChatFroze = 904;
+
+  // 排行榜
+  GameCmd_C2S_RankLevel = 910;
+  GameCmd_S2C_RankLevel = 911;
+  GameCmd_C2S_RankJade = 912;
+  GameCmd_S2C_RankJade = 913;
+  GameCmd_C2S_RankSldh = 914;
+  GameCmd_S2C_RankSldh = 915;
+  GameCmd_C2S_RankSect = 916;
+  GameCmd_S2C_RankSect = 917;
+  GameCmd_C2S_RankPay = 918;
+  GameCmd_S2C_RankPay = 919;
+  GameCmd_C2S_RankSinglePk = 920;
+  GameCmd_S2C_RankSinglePk = 921;
+  GameCmd_C2S_RankWzzz = 922;
+  GameCmd_S2C_RankWzzz = 923;
+  GameCmd_C2S_RankDaLuanDou = 924;
+  GameCmd_S2C_RankDaLuanDou = 925;
+
+  // 称谓
+  GameCmd_S2C_TitleList = 950;
+  GameCmd_S2C_TitleAdd = 951;
+  GameCmd_S2C_TitleDel = 952;
+  GameCmd_C2S_TitleChange = 953;
+  GameCmd_S2C_TitleChange = 954;
+
+  // 获取VIP信息
+  GameCmd_C2S_VipInfo = 955;
+  GameCmd_S2C_VipInfo = 956;
+  // 获取VIP奖励
+  GameCmd_C2S_VipGiftGet = 957;
+  GameCmd_S2C_VipGiftGet = 958;
+  // 双倍经验--信息
+  GameCmd_C2S_X2ExpInfo = 959;
+  GameCmd_S2C_X2ExpInfo = 960;
+  // 双倍经验--领取
+  GameCmd_C2S_X2ExpGet = 961;
+  GameCmd_S2C_X2ExpGet = 962;
+
+  //天策符--列表
+  GameCmd_C2S_TianceFuGetList = 970;
+  GameCmd_S2C_TianceFuGetList = 971;
+  //天策符--合成
+  GameCmd_C2S_TianceFuHeCheng = 972;
+  //天策符--鉴定
+  GameCmd_C2S_TianceFuJianDing = 973;
+  GameCmd_S2C_TianceFuJianDing = 974;
+  //天策符--分解
+  GameCmd_C2S_TianceFuFengJie = 975;
+  //天策符--使用
+  GameCmd_C2S_TianceFuUse = 976;
+  //打开天演策界面
+  GameCmd_C2S_TianYanCeOpen = 977;
+  GameCmd_S2C_TianYanCeOpen = 978;
+  //天演策升级
+  GameCmd_C2S_TianYanCeUpgrade = 979;
+  //天策符--百变鉴定
+  GameCmd_C2S_TianceFuJianDingBaiBian = 980;
+
+  //切割--进入
+  GameCmd_C2S_QieGeEnter = 981;
+  GameCmd_S2C_QieGeEnter = 982;
+  //切割--升级
+  GameCmd_C2S_QieGeUpgrade = 983;
+
+  // 红包--进入主界面
+  GameCmd_C2S_RedEnterMain = 984;
+  GameCmd_S2C_RedEnterMain = 985;
+  // 红包--详情
+  GameCmd_C2S_RedDetail = 986;
+  GameCmd_S2C_RedDetail = 987;
+  // 红包--历史记录
+  GameCmd_C2S_RedHistory = 988;
+  GameCmd_S2C_RedHistory = 989;
+  // 红包--发送
+  GameCmd_C2S_RedSend = 990;
+  GameCmd_S2C_RedSend = 991;
+  // 红包--抢包
+  GameCmd_C2S_RedGet = 992;
+  GameCmd_S2C_RedGet = 993;
+  // 全服烟花
+  GameCmd_S2C_FireWorks = 994;
+
+  // 同步地图和位置信息
+  GameCmd_S2C_MapSyncPos = 1000;
+  // 切断切换地图, 切换成功后会下发给玩家MapData
+  GameCmd_C2S_MapChange = 1001;
+  // 移动
+  GameCmd_C2S_MapMove = 1002;
+  // 停止移动
+  GameCmd_C2S_MapStop = 1003;
+  // 同步视野
+  GameCmd_S2C_MapSyncView = 1004;
+
+  //神之力--查询
+  GameCmd_C2S_ShenZhiLiInfo = 1021;
+  GameCmd_S2C_ShenZhiLiInfo = 1022;
+  //神之力--升级
+  GameCmd_C2S_ShenZhiLiUpgrade = 1023;
+
+  //成神之路副本信息--查询
+  GameCmd_C2S_CszlInfo = 1031;
+  GameCmd_S2C_CszlInfo = 1032;
+  //成神之路--挑战副本
+  GameCmd_C2S_CszlChallenge = 1033;
+  //成神之路--积分跳过本层
+  GameCmd_C2S_CszlScoreSkip = 1034;
+  //成神之路--爬塔层数排行榜
+  GameCmd_C2S_RankCszlLayer = 1035;
+  GameCmd_S2C_RankCszlLayer = 1036;
+   //成神之路--积分重置
+  GameCmd_C2S_CszlScoreReset = 1037;
+
+  // Npc商城
+  GameCmd_C2S_NpcShopItems = 1200;
+  GameCmd_S2C_NpcShopItems = 1201;
+  GameCmd_C2S_NpcShopBuy = 1202;
+  GameCmd_S2C_NpcShopUpdate = 1203;
+  // 多宝阁
+  GameCmd_C2S_ShopItems = 1210;
+  GameCmd_S2C_ShopItems = 1211;
+  GameCmd_C2S_ShopBuy = 1212;
+  // 摆摊
+  GameCmd_C2S_MallItems = 1300;
+  GameCmd_S2C_MallItems = 1301;
+  GameCmd_C2S_MallAddItem = 1302;
+  GameCmd_S2C_MallAddItem = 1303;
+  GameCmd_C2S_MallDelItem = 1304;
+  GameCmd_S2C_MallDelItem = 1305;
+  GameCmd_C2S_MallBuy = 1306;
+  GameCmd_S2C_MallBuy = 1307;
+  GameCmd_C2S_MallItemDetail = 1308;
+  GameCmd_S2C_MallItemDetail = 1309;
+  GameCmd_C2S_MallMyItems = 1310;
+  GameCmd_S2C_MallMyItems = 1311;
+  GameCmd_C2S_MallUpdateMyItem = 1312;
+  GameCmd_S2C_MallUpdateMyItem = 1313;
+  // 邮件
+  GameCmd_C2S_MailList = 1400;
+  GameCmd_S2C_MailList = 1401;
+  GameCmd_S2C_MailAdd = 1402;
+  GameCmd_C2S_MailPick = 1403;
+  GameCmd_S2C_MailPick = 1404;
+  GameCmd_C2S_MailDel = 1405;
+  GameCmd_S2C_MailDel = 1406;
+
+  // 下发任务数据
+  GameCmd_S2C_TaskList = 2000;
+  // 触发Npc战斗
+  GameCmd_C2S_TaskTriggerNpcBomb = 2002;
+  // 提交任务
+  GameCmd_C2S_TaskSubmitTalkNpc = 2003;
+  GameCmd_C2S_TaskSubmitGatherNpc = 2004;
+  GameCmd_C2S_TaskSubmitDoAction = 2005;
+  GameCmd_C2S_TaskInceptDaily = 2006;
+  GameCmd_C2S_TaskInceptInstance = 2007;
+  GameCmd_C2S_TaskAbort = 2008;
+  GameCmd_C2S_TaskDailyData = 2009;
+  GameCmd_S2C_TaskDailyData = 2010;
+  GameCmd_C2S_TaskActivePrize = 2011;
+
+  // 战斗系统
+  GameCmd_S2C_BattleStart = 3000;
+  GameCmd_S2C_BattleStop = 3001;
+  GameCmd_S2C_BattleRoundBegine = 3003;
+  GameCmd_S2C_BattleRoundEnd = 3002;
+  GameCmd_C2S_BattleAttack = 3005;
+  GameCmd_S2C_BattleAttack = 3006;
+
+  //观战--进入
+  GameCmd_C2S_EnterWatchBattle = 3007;
+  //观战--退出
+  GameCmd_C2S_ExitWatchBattle = 3008;
+
+  // 天降灵猴
+  GameCmd_C2S_TianJiangLingHouFight = 3100;
+
+  // 玩家PK
+  GameCmd_C2S_PK = 3200;
+
+  // 皇城决斗
+  GameCmd_C2S_HcPk = 3210;
+  GameCmd_S2C_HcPk = 3211;
+  GameCmd_C2S_HcHandleApply = 3212;
+  GameCmd_C2S_HcRoleList = 3213;
+  GameCmd_S2C_HcRoleList = 3214;
+
+  // 挑战NPC
+  GameCmd_C2S_ChallengeNpc = 3230;
+  // 地煞星报名成功后等待5s
+  GameCmd_S2C_StarWaiting = 3231;
+
+  // 甄不亏
+  GameCmd_S2C_ZhenBuKuiState = 3240;
+
+  // 水陆大会
+  GameCmd_C2S_SldhSign = 3300;
+  GameCmd_S2C_SldhSign = 3301;
+  GameCmd_C2S_SldhUnSign = 3302;
+  GameCmd_S2C_SldhUnSign = 3303;
+  GameCmd_C2S_SldhInfo = 3304;
+  GameCmd_S2C_SldhInfo = 3305;
+  GameCmd_S2C_SldhState = 3306;
+  GameCmd_S2C_SldhMatch = 3307;
+  GameCmd_S2C_SldhBattleResult = 3308;
+
+  // 王者之战
+  GameCmd_C2S_WzzzSign = 3310;
+  GameCmd_S2C_WzzzSign = 3311;
+  GameCmd_C2S_WzzzUnSign = 3312;
+  GameCmd_S2C_WzzzUnSign = 3313;
+  GameCmd_C2S_WzzzInfo = 3314;
+  GameCmd_S2C_WzzzInfo = 3315;
+  GameCmd_S2C_WzzzState = 3316;
+  GameCmd_S2C_WzzzMatch = 3317;
+  GameCmd_S2C_WzzzBattleResult = 3318;
+
+  // 帮战退出状态补丁
+  GameCmd_S2C_SectWarStateFix = 3399;
+  // 帮战状态
+  GameCmd_S2C_SectWarState = 3400;
+  // 入场
+  GameCmd_C2S_SectWarEnter = 3401;
+  GameCmd_S2C_SectWarEnter = 3402;
+  GameCmd_C2S_SectWarExit = 3403;
+  GameCmd_S2C_SectWarExit = 3404;
+  GameCmd_C2S_SectWarChangePlace = 3405;
+  GameCmd_S2C_SectWarChangePlace = 3406;
+  // 挑战敌方高手
+  GameCmd_C2S_SectWarReadyPk = 3407;
+  GameCmd_S2C_SectWarReadyPk = 3408;
+  // 取消挑战
+  GameCmd_C2S_SectWarCancelPk = 3409;
+  GameCmd_S2C_SectWarCancelPk = 3410;
+  // 挑战结果
+  GameCmd_S2C_SectWarPkResult = 3411;
+  // 城门体力变化
+  GameCmd_S2C_SectWarDoorHp = 3412;
+  // 帮战结束
+  GameCmd_S2C_SectWarResult = 3413;
+  // 抢夺炮台
+  GameCmd_C2S_SectWarGrabCannon = 3414;
+  GameCmd_S2C_SectWarGrabCannon = 3415;
+  GameCmd_S2C_SectWarBreakCannon = 3417;
+  GameCmd_S2C_SectWarFireCannon = 3418;
+  // 攻击城门
+  GameCmd_C2S_SectWarLockDoor = 3419;
+  GameCmd_S2C_SectWarLockDoor = 3420;
+  GameCmd_C2S_SectWarCancelDoor = 3421;
+  GameCmd_S2C_SectWarCancelDoor = 3422;
+  GameCmd_C2S_SectWarBreakDoor = 3423;
+  GameCmd_S2C_SectWarBreakDoor = 3424;
+  GameCmd_S2C_SectWarFireDoor = 3425;
+  // 自由PK
+  GameCmd_C2S_SectWarFreePk = 3426;
+  GameCmd_S2C_SectWarFreePk = 3427;
+  // 查询帮战信息
+  GameCmd_C2S_SectWarInfo = 3430;
+  GameCmd_S2C_SectWarInfo = 3431;
+
+  // 单人PK
+  GameCmd_C2S_SinglePkSign = 3500;
+  GameCmd_S2C_SinglePkSign = 3501;
+  GameCmd_C2S_SinglePkUnSign = 3502;
+  GameCmd_S2C_SinglePkUnSign = 3503;
+  GameCmd_C2S_SinglePkInfo = 3504;
+  GameCmd_S2C_SinglePkInfo = 3505;
+  GameCmd_S2C_SinglePkState = 3506;
+  GameCmd_S2C_SinglePkMatch = 3507;
+  GameCmd_S2C_SinglePkBattleResult = 3508;
+
+  // 神兽降临
+  GameCmd_C2S_SsjlSign = 3521;
+  GameCmd_S2C_SsjlSign = 3522;
+  GameCmd_C2S_SsjlUnSign = 3523;
+  GameCmd_S2C_SsjlUnSign = 3524;
+  GameCmd_S2C_SsjlState = 3525;
+  GameCmd_S2C_SsjlResult = 3526;
+
+  // 大乱斗PK
+  GameCmd_C2S_DaLuanDouSign = 3530;
+  GameCmd_S2C_DaLuanDouSign = 3531;
+  GameCmd_C2S_DaLuanDouUnSign = 3532;
+  GameCmd_S2C_DaLuanDouUnSign = 3533;
+  GameCmd_C2S_DaLuanDouInfo = 3534;
+  GameCmd_S2C_DaLuanDouInfo = 3535;
+  GameCmd_S2C_DaLuanDouState = 3536;
+  GameCmd_S2C_DaLuanDouMatch = 3537;
+  GameCmd_S2C_DaLuanDouBattleResult = 3538;
+  // GameCmd_C2S_DaLuanDouEnter = 3539;
+  // GameCmd_S2C_DaLuanDouEnter = 3540;
+  GameCmd_C2S_DaLuanDouPk = 3541;
+  GameCmd_S2C_DaLuanDouPk = 3542;
+
+}
+
+message C2S_HeartBeat {
+  string resVersion = 1;
+}
+message S2C_HeartBeat {
+  string resVersion = 1;
+  bool force = 2;
+}
+
+message S2C_Error {
+  Errors errCode = 1;
+}
+message S2C_NetError {
+  NetError error = 1;
+}
+message S2C_Notice {
+  string text = 1;
+}
+message S2C_ScreenNotice {
+  string text = 1;
+  int32 front = 2;
+}
+message S2C_NpcNotice {
+  uint32 cfgId = 1;
+  string text = 2;
+}
+
+message S2C_PrisonTime {
+  uint32 time = 1;
+}
+message S2C_IncenseTime {
+  uint32 time = 1;
+}
+message C2S_IncenseStop {
+
+}
+
+message C2S_AppPause {
+  bool  pause = 1;
+}
+
+message C2S_PrisonFree {
+
+}
+
+message C2S_ShanXianOrder {
+  bool enable = 1;
+}
+message S2C_ShanXianOrder {
+  bool enable = 2;
+}
+message C2S_LiBao {
+
+}
+
+// 兑换可选无价配饰套
+message C2S_GetWuJiaTao {
+  uint32 suitId = 1;
+}
+// 兑换可选无价配饰部件
+message C2S_GetWuJiaBuJian {
+  uint32 suitId = 1;
+  uint32 index = 2; //1-披风、2-挂件、3-腰带、4-戒指
+}
+// 兑换可选终极技能书
+message C2S_GetJiNengShu {
+  uint32 cfgId = 1; //item表中确定性的终极技能书id
+}
+// 兑换可选二级五行材料
+message C2S_GetWuXingCaiLiao {
+  uint32 cfgId = 1; //item表中确定性的二级五行材料
+}
+
+message C2S_EnterServer {
+  // 为了更好的控制视野范围, 上报设备的高宽
+  uint32 deviceWidth = 1;
+  uint32 deviceHeight = 2;
+  // 操作系统
+  string os = 3;
+  // 包名
+  string packageName = 4;
+  // app版本号
+  uint32 appVersionCode = 5;
+  // 资源版本号
+  string resVersion = 6;
+  // 渠道号
+  uint32 channel = 7;
+}
+message S2C_EnterServer {
+
+}
+
+// 角色信息
+message S2C_RoleInfo {
+  uint32 onlyId = 1;
+  uint32 roleId = 2;
+  string nickname = 3;
+  uint32 cfgId = 4;
+  Sex sex = 6;
+  Race race = 7;
+  uint32 relive = 8;
+  uint32 level = 9;
+  uint64 exp = 10;
+  uint64 expMax = 11;
+  uint32 contrib = 12;
+  uint32 silver = 13;
+  uint32 jade = 14;
+  uint32 bindJade = 15;
+  uint32 sldhGongji = 16; //水路大会功绩
+  repeated SkillData skills = 17;
+  uint32 color1 = 18;
+  uint32 color2 = 19;
+  uint32 xlLevel = 20;
+  uint32 roleType = 21; //0-normal 1-gm 2-robot
+  bool worldSilent = 22; //世界聊天是否被禁言
+  bool sectSilent = 23; //帮派聊天是否被禁言
+  bool shanXianOrder = 24; //是否开启闪现支援
+  uint32 wzzzJiFen = 25; //王者之战积分
+
+  bool inBattle = 30;
+  bool locked = 31; //当前是否已经锁上了安全锁
+  bool lockSeted = 32;//当前是否已经设置了安全锁密码
+  uint32 spread = 33; //我的推广人
+  uint32 spreadTime = 34;//绑定时间
+
+  uint32 mapId = 40;
+  int32 mapX = 41;
+  int32 mapY = 42;
+
+  // 由于需要提前创建角色
+  MapObjectEquipData weapon = 43;
+  MapObjectEquipData wing = 44;
+  uint32 mount = 45; //坐骑配置id
+
+  uint32 guoShi = 50; //郭氏积分
+  uint32 autoSkill = 51; //自动技能
+  bool autoSyncSkill = 52;//自动同步技能
+
+  repeated int32 skins = 61; // 正在使用的皮肤（暂时只含足迹和特效）
+  int32 bianshen = 62; // 变身ID
+  uint32 vipLevel = 63; // VIP等级
+  uint32 qiegeLevel = 64; // 切割等级
+}
+// 经验增加
+message S2C_RoleExp {
+  // 当前等级
+  uint32 level = 1;
+  // 本次增加的等级
+  int32 levelAdd = 2;
+
+  // 当前经验值
+  uint64 exp = 3;
+  // 当前等级经验最大值
+  uint64 expMax = 4;
+  // 增加的经验值
+  uint64 expAdd = 5;
+}
+// 角色货币变换
+message S2C_RoleMoney {
+  MoneyType type = 1;
+  uint32 value = 2;
+  int32 delta = 3;
+  bool noNotice = 4;
+}
+// 角色武器
+message S2C_RoleWeapon {
+  MapObjectEquipData data = 1;
+}
+// 角色翅膀
+message S2C_RoleWing {
+  MapObjectEquipData data = 1;
+}
+
+// 升级技能
+message C2S_SkillUpdate {
+  SkillId id = 1;
+}
+message S2C_SkillUpdate {
+  SkillData data = 1;
+}
+// 修改昵称
+message C2S_ChangeName {
+  string nickname = 1;
+}
+message S2C_ChangeName {
+  string nickname = 2;
+}
+message C2S_ChangeRace {
+  uint32 cfgId = 1;
+}
+message S2C_ChangeRace {
+  uint32 cfgId = 1;
+  uint32 race = 2;
+  uint32 sex = 3;
+  repeated SkillData skills = 4;
+}
+message C2S_Relive {
+  uint32 cfgId = 1;
+}
+message S2C_Relive {
+  uint32 cfgId = 1;
+  uint32 race = 2;
+  uint32 sex = 3;
+  repeated SkillData skills = 4;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint64 exp = 7;
+  uint64 expMax = 8;
+  // repeated AttrPair fixAttrs = 9; //转生修正属性
+}
+//message C2S_ReliveList {
+//
+//}
+//message ReliveInfo {
+//  uint32 relive = 1;
+//  uint32 race = 2;
+//  uint32 sex = 3;
+//}
+//message S2C_ReliveList {
+//  repeated ReliveInfo list = 1;
+//}
+message C2S_ChangeColor {
+  uint32 index1 = 1;
+  uint32 index2 = 2;
+}
+message S2C_ChangeColor {
+  uint32 color1 = 1;
+  uint32 color2 = 2;
+}
+message S2C_LevelRewardList {
+  repeated UintPair list = 1;
+}
+message C2S_LevelRewardGet {
+  uint32 level = 1;
+}
+message C2S_XinShouGiftGet {
+
+}
+message C2S_XinShouGiftCheck {
+}
+message S2C_XinShouGiftCheck {
+  bool valid = 1;
+}
+message C2S_UpgradeXlLevel {
+  uint32 add = 1;
+}
+message S2C_UpgradeXlLevel {
+  uint32 xlLevel = 1;
+}
+message C2S_SafePassword {
+  string password = 1;
+  string oldPassword = 2;
+}
+message S2C_SafePassword {
+  bool  lockSeted = 1;
+}
+message C2S_SafeLock {
+  bool  lock = 1;
+  string password = 2;
+}
+message S2C_SafeLock {
+  bool  lock = 1;
+}
+message C2S_BindSpread {
+  uint32 roleId = 1;
+}
+message S2C_BindSpread {
+  uint32 roleId = 1;
+  uint32 time = 2;
+}
+message C2S_Spreads {
+  int32 pageIndex = 1;
+}
+message S2C_Spreads {
+  int32 pageIndex = 1;
+  int32 total = 2;
+  repeated RoleInfo list = 3;
+}
+// 进入充值页
+message C2S_EnterChargeUI {
+}
+message S2C_EnterChargeUI {
+  repeated uint32 amountList4Jade = 1;
+  repeated uint32 amountList4BindJade = 2;
+  uint32 jadeRate = 3;
+  uint32 bindJadeRate = 4;
+  uint32 chargeType = 5;
+}
+message C2S_Order {
+  uint32 sdk = 1;
+  uint32 payType = 2;
+  uint32 money = 3;
+  uint32 chargeType = 4;
+}
+message S2C_Order {
+  string url = 1;
+}
+message C2S_AutoSkill {
+  uint32 skill = 1;
+  bool autoSync = 2;
+}
+message S2C_AutoSkill {
+  uint32 skill = 1;
+  bool autoSync = 2;
+}
+
+// 道具列表
+message S2C_ItemList {
+  // 背包项
+  repeated ItemData bagList = 1;
+  // 仓库中
+  repeated ItemData repoList = 2;
+}
+// 获得物品
+message S2C_ItemAdd {
+  repeated ItemData list = 1;
+}
+// 移除物品
+message C2S_ItemDel {
+  repeated ItemData list = 1;
+}
+message S2C_ItemDel {
+  repeated ItemData list = 1;
+}
+// 使用物品
+message C2S_ItemUse {
+  uint32 id = 1;
+  uint32 num = 2;
+  // 使用的目标id, 比如亲密丹需要指定宠物id
+  uint32 target = 3;
+}
+// 合成道具
+message C2S_ItemCompose {
+  uint32 parentId = 1;
+  uint32 num = 2;
+}
+// 五行熔炼
+message C2S_ItemFusion {
+  repeated uint32 items = 1;
+}
+// 物品放入仓库
+message C2S_RepoUpdate {
+  bool isAdd = 1; //是否为放入仓库
+  uint32 type = 2; //0-物品，1-装备，2-配饰
+  uint32 target = 3; //物品id or 装备id
+}
+message S2C_RepoUpdate {
+  bool isAdd = 1;
+  uint32 type = 2;
+  uint32 target = 3;
+}
+// 高级藏宝图抽奖
+message LotteryItem {
+  uint32 itemId = 1;
+  uint32 itemNum = 2;
+}
+message C2S_LotteryOpen {
+  uint32 cfgId = 1;
+}
+message S2C_LotteryOpen {
+  uint32 cfgId = 1;
+  int32 index = 2;
+  repeated LotteryItem items = 3;
+}
+
+// 查询角色充值情况
+message C2S_RolePays {
+
+}
+message S2C_RolePays {
+  uint32 totalPay = 1;
+  repeated uint32 totalPayRewards = 2;
+  uint32 dailyPay = 3;
+  repeated uint32 dailyPayRewards = 4;
+  int32 firstPayReward = 5; //首充奖励，-1表示不能领取，0表示可以领取但未领取，1表示已领取
+  repeated uint32 ewaiPayRewards = 6;
+  uint32 ewaiPay = 7;
+}
+// 领取累计充值奖励
+message C2S_TotalPayRewards {
+  uint32 money = 1;
+}
+message S2C_TotalPayRewards {
+  uint32 totalPay = 1;
+  repeated uint32 totalPayRewards = 2;
+}
+// 重置累计充值
+message C2S_TotalPayRewardsReset {
+}
+
+// 领取额外累计充值奖励
+message C2S_EwaiPayRewards {
+  uint32 money = 1;
+}
+message S2C_EwaiPayRewards {
+  uint32 ewaiPay = 1;
+  repeated uint32 ewaiPayRewards = 2;
+}
+// 重置额外累计充值
+message C2S_EwaiPayRewardsReset {
+}
+
+// 领取每日充值奖励
+message C2S_DailyPayRewards {
+  uint32 money = 1;
+}
+message S2C_DailyPayRewards {
+  uint32 dailyPay = 1;
+  repeated uint32 dailyPayRewards = 2;
+}
+// 重置每日充值
+message C2S_DailyPayRewardsReset {
+
+}
+// 领取首充奖励
+message C2S_FirstPayReward {
+
+}
+message S2C_FirstPayReward {
+  int32 firstPayReward = 1;
+}
+
+// 回收物品
+message C2S_Recover {
+  uint32 type = 1; // 0-物品, 1-装备, 2-配饰
+  uint32 id = 2;
+  uint32 num = 3;
+}
+
+message S2C_Recover {
+  uint32 type = 1;
+  uint32 id = 2;
+  uint32 num = 3;
+}
+
+// 装备列表
+message S2C_EquipList {
+  repeated EquipData list = 1;
+}
+message S2C_EquipAdd {
+  EquipData data = 1;
+}
+message S2C_EquipDel {
+  uint32 id = 1;
+}
+message S2C_EquipInfo {
+  EquipData data = 1;
+}
+message C2S_EquipUpgrade {
+  uint32 id = 1;
+  uint32 use1 = 2;
+  uint32 use2 = 3;
+}
+message C2S_EquipInlay {
+  uint32 id = 1;
+  bool add = 2; // true为镶嵌，false拆卸
+}
+message C2S_EquipRefine {
+  uint32 id = 1;
+  uint32 level = 2; //0-低级九彩云龙珠 1-中级九彩云龙珠 2-高级九彩云龙珠
+  uint32 opera = 3; //0-获取，1-确认
+}
+message C2S_EquipRefineTimes {
+  uint32 id = 1;
+  uint32 level = 2; //0-低级九彩云龙珠 1-中级九彩云龙珠 2-高级九彩云龙珠
+  uint32 opera = 3; //0-获取，1-确认
+  uint32 times = 4; //炼化次数
+  uint32 choiceIndex = 5; //确认用哪次炼化？
+}
+message C2S_EquipRecast {
+  uint32 id = 1;
+  uint32 opera = 2; //0-获取，1-确认
+}
+message C2S_EquipDelete {
+  uint32 id = 1;
+}
+message C2S_EquipCombine {
+  EquipCategory category = 1;
+  uint32 index = 2;
+}
+message S2C_EquipCombine {
+  uint32 id = 1;
+}
+message C2S_EquipProperty {
+  uint32 id = 1;
+  uint32 flag = 2; // 1-炼化, 2-重铸
+}
+message S2C_EquipProperty {
+  uint32 id = 1;
+  uint32 flag = 2;
+  repeated AttrPair list = 3;
+  uint32 score = 4;
+}
+message C2S_EquipPropertyList {
+  uint32 id = 1;
+  uint32 flag = 2; // 1-炼化, 2-重铸
+}
+message S2C_EquipPropertyList {
+  uint32 id = 1;
+  uint32 flag = 2;
+  repeated EquipProperty list = 3;
+}
+message C2S_ShareEquipInfo {
+  uint32 id = 1;
+}
+message S2C_ShareEquipInfo {
+  EquipData data = 1;
+}
+message C2S_EquipDingZhi {
+  uint32 id = 1;
+  repeated int32 attrs = 2; //定制的属性数组
+}
+message C2S_OrnamentDingZhi {
+  uint32 id = 1;
+  repeated int32 attrs = 2; //定制的属性数组
+}
+// 装备升星
+message C2S_EquipStarUpgrade {
+  // 要升星的装备
+  uint32 id = 1;
+  // 要使用的物品ID
+  uint32 useItemId = 2;
+}
+// 装备升星--升阶
+message C2S_EquipGradeUpgrade {
+  // 要升阶的装备
+  uint32 id = 1;
+}
+
+// 配饰列表
+message S2C_OrnamentList {
+  repeated OrnamentData list = 1;
+}
+message S2C_OrnamentAdd {
+  OrnamentData data = 1;
+}
+message C2S_OrnamentDel {
+  uint32 id = 1;
+}
+message S2C_OrnamentDel {
+  uint32 id = 1;
+}
+message S2C_OrnamentInfo {
+  OrnamentData data = 1;
+}
+message C2S_OrnamentProperty {
+  uint32 id = 1;
+}
+message S2C_OrnamentProperty {
+  uint32 id = 1;
+  repeated AttrPair list = 3;
+  uint32 score = 4;
+}
+message C2S_OrnamentRecast {
+  uint32 id = 1;
+  uint32 opera = 2; //0-获取，1-确认
+  repeated AttrType locks = 3;//属性锁定数组
+}
+message C2S_OrnamentDecompose {
+  uint32 id = 1;
+}
+message S2C_OrnamentDecompose {
+  uint32 id = 1;
+  repeated ItemData list = 2;
+}
+message C2S_OrnamentAppraisal {
+  uint32 itemId = 1;
+}
+message C2S_ShareOrnamentInfo {
+  uint32 id = 1;
+}
+message S2C_ShareOrnamentInfo {
+  OrnamentData data = 1;
+}
+//获得玩家各种操作的次数
+message C2S_GetOperateTimes {
+  uint32 id = 1;    //  1->孩子洗炼 2->星阵洗炼 3->配饰炼化
+}
+message S2C_GetOperateTimes {
+  uint32 id = 1;
+  uint32 times = 2;
+}
+
+// 方案列表
+message S2C_SchemeList {
+  repeated SchemeData list = 1;
+}
+message S2C_SchemeInfo {
+  SchemeData data = 1;
+}
+message S2C_SchemeAttrs {
+  uint32 id = 1;
+  uint32 potential = 2;
+  uint32 xlLevelMax = 3;
+  repeated AttrPair attrs = 4;
+}
+// 激活方案
+message C2S_SchemeActive {
+  uint32 id = 1;
+}
+message S2C_SchemeActive {
+  uint32 id = 1;
+}
+// 属性加点
+message C2S_SchemeAddPoint {
+  repeated AttrPair attrs = 1;
+}
+message S2C_SchemeAddPoint {
+  uint32 potential = 1;
+  repeated AttrPair apAttrs = 2;
+  repeated AttrPair attrs = 3;
+}
+// 重置修炼加点
+message C2S_SchemeResetAddPoint {
+}
+// 修炼加点
+message C2S_SchemeXiuLian {
+  repeated AttrPair attrs = 1;
+}
+message S2C_SchemeXiuLian {
+  repeated AttrPair xlAttrs = 1;
+  repeated AttrPair attrs = 2;
+}
+// 重置修炼加点
+message C2S_SchemeResetXlPoint {
+}
+// 穿戴装备
+message C2S_SchemeEquip {
+  uint32 pos = 1;
+  uint32 equip = 2; //如果为0表示脱下这个装备
+}
+message S2C_SchemeEquip {
+  uint32 pos = 1;
+  uint32 equip = 2;
+  uint32 score = 3;
+  repeated AttrPair attrs = 4;
+}
+// 穿戴配饰
+message C2S_SchemeOrnament {
+  uint32 pos = 1;
+  uint32 ornament = 2; //如果为0表示脱下这个配饰
+}
+message S2C_SchemeOrnament {
+  uint32 pos = 1;
+  uint32 ornament = 2;
+  uint32 score = 3;
+  repeated AttrPair attrs = 4;
+  uint32 suitId = 5;
+  repeated uint32 skills = 6;
+}
+// 修改方案名称
+message C2S_SchemeName {
+  uint32  id = 1;
+  string name = 2;
+}
+message S2C_SchemeName {
+  uint32 id = 1;
+  string name = 2;
+}
+//message C2S_SchemeResetFixPreview {
+//  // 按照1转修正、2转修正的顺序来排序
+//  repeated ReliveRecord list = 1;
+//}
+//message S2C_SchemeResetFixPreview {
+//  repeated AttrPair oldFixAttrs = 1;
+//  repeated AttrPair newFixAttrs = 2;
+//}
+message C2S_SchemeResetFix {
+  repeated ReliveRecord list = 1;
+}
+message S2C_SchemeResetFix {
+  uint32 id = 1;
+  repeated ReliveRecord relives = 2;
+  repeated AttrPair fixAttrs = 3;
+  repeated AttrPair attrs = 4;
+}
+
+message C2S_SkinInfo {
+  repeated int32 use = 1;
+}
+message S2C_SkinInfo {
+  repeated int32 use = 1; //玩家正在使用的
+  repeated int32 has = 2; //玩家已经解锁的
+}
+
+// 获取变身信息
+message C2S_BianshenInfo {
+}
+message S2C_BianshenInfo {
+  string info = 1;
+}
+// 五行升级
+message C2S_BianshenWuxingLevelUp {
+  int32 type = 1;
+}
+message S2C_BianshenWuxingLevelUp {
+  int32 type = 1;
+  string wuxing = 2;
+}
+// 使用变身卡
+message C2S_BianshenUse {
+  int32 id = 1;
+  bool avatar = 2;
+}
+message S2C_BianshenUse {
+  int32 id = 1;
+  string timestamp = 2;
+  bool avatar = 3;
+}
+// 变身还原
+message C2S_BianshenReset {
+}
+
+// 获取星阵信息
+message C2S_XingzhenInfo {
+}
+message S2C_XingzhenInfo {
+  string info = 1;
+}
+// 星阵--解锁
+message C2S_XingzhenUnlock {
+  int32 id = 1;
+}
+// 星阵--装备
+message C2S_XingzhenUse {
+  int32 id = 1;
+}
+// 星阵--升级
+message C2S_XingzhenUpgrade {
+  int32 id = 1;
+  int32 itemId = 2;
+}
+// 星阵--洗炼
+message C2S_XingzhenRefine {
+  int32 id = 1;
+}
+// 星阵--替换
+message C2S_XingzhenReplace {
+  int32 id = 1;
+}
+// 星阵--定制
+message C2S_XingzhenDingZhi {
+  int32 id = 1;
+  repeated string attrs = 2;
+}
+
+// 获取孩子信息
+message C2S_ChildInfo {
+}
+message S2C_ChildInfo {
+  string info = 1;
+}
+// 孩子--领养
+message C2S_ChildAdopt {
+  Sex sex = 1;
+}
+// 孩子--起名
+message C2S_ChildRename {
+  string name = 1;
+}
+// 孩子--培养
+message C2S_ChildUpgrade {
+  uint32 itemId = 1;
+}
+// 孩子--更换形象
+message C2S_ChildChangeShape {
+  int32 shape = 1;
+}
+// 孩子--洗炼
+message C2S_ChildRefine {
+}
+// 孩子--替换
+message C2S_ChildReplace {
+}
+// 孩子--定制
+message C2S_ChildDingZhi {
+  repeated int32 skills = 1;
+}
+
+// 转盘--信息
+message C2S_LuckyDrawInfo {
+}
+message S2C_LuckyDrawInfo {
+  // 奖励配置
+  LuckyDrawChest chest = 1;
+  // 当前风雨值
+  uint32 currentPoint = 2;
+  // 转一次消耗
+  uint32 cost = 3;
+  // 免费次数
+  uint32 free = 4;
+  // 能否开宝箱？
+  bool canOpenChest = 5;
+}
+// 转盘--抽奖
+message C2S_LuckyDrawTurn {
+  // 抽奖次数
+  uint32 count = 1;
+}
+message S2C_LuckyDrawTurn {
+  // 错误信息
+  string errorMsg = 1;
+  // 抽奖结果
+  repeated LuckyDrawOneTurn turnList = 2;
+  // 当前风雨值
+  uint32 currentPoint = 3;
+}
+// 转盘--开宝箱
+message C2S_LuckyDrawOpenChest {
+}
+message S2C_LuckyDrawOpenChest {
+  // 错误信息
+  string errorMsg = 1;
+  // 宝箱奖励
+  LuckyDrawChest chest = 2;
+}
+
+// 宠物列表
+message S2C_PetList {
+  repeated PetData list = 1;
+}
+// 新获得宠物或宠物更新
+message S2C_PetInfo {
+  PetData data = 1;
+}
+// 放生宠物
+message C2S_PetDel {
+  uint32 id = 1;
+}
+message S2C_PetDel {
+  uint32 id = 1;
+  uint32 active = 2;
+}
+
+// 提示玩家领取宠物
+message S2C_PetAdopt {
+
+}
+// 玩家领取宠物
+message C2S_PetAdopt {
+  uint32 id = 1;
+}
+message C2S_PetActive {
+  uint32 id = 1;
+}
+message S2C_PetActive {
+  uint32 id = 1;
+}
+message C2S_PetWash {
+  uint32 id = 1;
+}
+message S2C_PetWash {
+  uint32 id = 1;
+  PetWashData data = 2;
+}
+message C2S_PetSaveWash {
+  uint32 id = 1;
+}
+message C2S_PetRelive {
+  uint32 id = 1;
+}
+message C2S_PetCombine {
+  uint32 cfgId = 1;
+}
+message C2S_PetUnlock {
+  uint32 id = 1;
+}
+message S2C_PetUnlock {
+  uint32 id = 1;
+  int32 index = 2;
+}
+message C2S_PetLearnSkill {
+  uint32 id = 1;
+  int32 index = 2;
+  uint32 itemId = 3;
+}
+message C2S_PetForgetSkill {
+  uint32 id = 1;
+  SkillId skId = 2;
+}
+message C2S_PetLockSkill {
+  uint32 id = 1;
+  SkillId skId = 2;
+  bool  lock = 3;
+}
+message S2C_PetLockSkill {
+  uint32 id = 1;
+  SkillId skId = 2;
+  bool  lock = 3;
+}
+// 改变神兽技能
+message C2S_PetChangeSsSkill {
+  uint32 id = 1;
+  SkillId skId = 2;
+}
+message C2S_PetFly {
+  uint32 id = 1;
+  uint32 type = 2; //第三次飞升，修改的属性
+}
+message C2S_PetAddPoint {
+  uint32 id = 1;
+  bool reset = 2; //是否重置, 重置就不用传attrs
+  repeated AttrPair attrs = 3;
+}
+message S2C_PetAddPoint {
+  uint32 id = 1;
+  // 剩余的潜能点
+  uint32 potential = 2;
+  // 加点属性
+  repeated AttrPair apAttrs = 3;
+  // 宠物的全属性
+  repeated AttrPair attrs = 4;
+}
+message C2S_PetRefine {
+  uint32 id = 1;
+  bool  reset = 2; //是否重置, 重置就不用传attrs
+  repeated AttrPair attrs = 3;
+}
+message S2C_PetRefine {
+  uint32 id = 1;
+  uint32 refineLevel = 2; // 修炼等级
+  uint32 refineExp = 3; //当前修炼经验
+  uint32 refineExpMax = 4; //当前最大修炼经验值
+  repeated AttrPair refineAttrs = 5; // 修炼属性
+
+  repeated AttrPair attrs = 10; // 宠物的全属性
+}
+message C2S_SharePetInfo {
+  uint32 id = 1;
+}
+message S2C_SharePetInfo {
+  PetData data = 1;
+}
+message C2S_SharePetOrnamentInfo {
+  uint32 id = 1;
+}
+message S2C_SharePetOrnamentInfo {
+  PetOrnamentData data = 1;
+}
+message  C2S_PetName {
+  uint32 id = 1;
+  string name = 2;
+}
+message  S2C_PetName {
+  uint32 id = 1;
+  string name = 2;
+}
+// 修改
+message C2S_PetChangeShanXianOrder {
+  uint32 id = 1;
+  uint32 order = 2;
+}
+// 下发列表
+message S2C_PetShanXianOrderList {
+  repeated PetShanXianOrderItem list = 1;
+}
+message PetShanXianOrderItem {
+  uint32 id = 1;
+  uint32 order = 2;
+}
+message C2S_PetWashPreview {
+  uint32 id = 1;
+}
+message S2C_PetWashPreview {
+  uint32 id = 1;
+  PetWashData data = 2;
+}
+message C2S_PetAutoSkill {
+  uint32 id = 1;
+  uint32 skill = 2;
+}
+message S2C_PetAutoSkill {
+  uint32 id = 1;
+  uint32 skill = 2;
+}
+// 觉醒突破
+message C2S_PetJxTuPo {
+  uint32 id = 1;
+  // 是否必突破？
+  bool must = 2;
+}
+
+// 坐骑列表
+message S2C_MountList {
+  repeated MountData list = 1;
+}
+// 坐骑变更
+message S2C_MountInfo {
+  MountData data = 1;
+}
+// 乘骑坐骑
+message C2S_MountActive {
+  uint32 id = 1;
+  bool active = 2;
+}
+message S2C_MountActive {
+  uint32 id = 1;
+  bool active = 2;
+}
+// 乘骑解锁
+message C2S_MountUnlock {
+  uint32 id = 1;
+}
+// 乘骑定制
+message C2S_MountDingZhi {
+  uint32 id = 1;
+  repeated uint32 skills = 2;
+}
+message C2S_MountWash {
+  uint32 id = 1;
+}
+message S2C_MountWash {
+  uint32 id = 1;
+  MountWashData data = 2;
+}
+message C2S_MountSaveWash {
+  uint32 id = 1;
+}
+message C2S_MountControl {
+  uint32 id = 1;
+  uint32 petId = 2;
+  bool add = 3; //true表示管制, false表示取消管制
+}
+message S2C_MountControl {
+  uint32 id = 1;
+  uint32 petId = 2;
+  bool add = 3;
+}
+message C2S_MountUpgradeSkill {
+  uint32 id = 1;
+  int32 grid = 2; //技能索引，1,2,3
+}
+message S2C_MountUpgradeSkill {
+  uint32 id = 1;
+  int32 grid = 2;
+  MountSkillData skill = 3;
+}
+message C2S_MountWashPreview {
+  uint32 id = 1;
+}
+message S2C_MountWashPreview {
+  uint32 id = 1;
+  MountWashData data = 2;
+}
+
+message S2C_PartnerList {
+  repeated PartnerData list = 1;
+  repeated uint32 actives = 2;
+}
+message S2C_PartnerInfo {
+  PartnerData data = 1;
+}
+message C2S_PartnerPos {
+  uint32 id = 1;
+  uint32 pos = 2;
+}
+message S2C_PartnerActiveList {
+  repeated uint32 list = 1;
+}
+message C2S_PartnerExchange {
+  uint32 id1 = 1;
+  uint32 id2 = 2;
+  // 1-移形换影， 2-银两
+  uint32 cost = 3;
+}
+message C2S_PartnerRelive {
+  uint32 id = 1;
+}
+
+// 队伍数据
+message S2C_TeamData {
+  TeamData data = 1;
+}
+// 创建队伍
+message C2S_TeamCreate {
+  TeamTarget target = 1;
+}
+// 申请加入队伍
+message C2S_TeamApplyJoin {
+  uint32 id = 1;
+}
+message C2S_TeamJoinApplyList {
+
+}
+// 给队长下发所有的加入申请
+message S2C_TeamJoinApplyList {
+  uint32 total = 1;
+  repeated TeamApplyJoinData list = 2;
+}
+message S2C_TeamJoinApplyAdd {
+  TeamApplyJoinData data = 1;
+}
+message S2C_TeamJoinApplyDel {
+  uint32 roleId = 1;
+}
+// 队长对加入申请进行处理
+message C2S_TeamHandleJoinApply {
+  uint32 roleId = 1;
+  bool agree = 2;
+}
+// 请求退出队伍
+message C2S_TeamExit {
+
+}
+// 队长踢人
+message C2S_TeamKickout {
+  uint32 roleId = 1;
+}
+// 队伍中有人上线
+message S2C_TeamPlayerOnline {
+  uint32 roleId = 1;
+}
+// 队伍中有人下线
+message S2C_TeamPlayerOffline {
+  uint32 roleId = 1;
+}
+// 队伍中成员更新, 全数据更新
+message S2C_TeamPlayerUpdate {
+  TeamObjectData data = 1;
+}
+message C2S_TeamList {
+  uint32 pageIndex = 1;
+  TeamTarget target = 2;
+}
+message S2C_TeamList {
+  uint32 pageIndex = 1;
+  TeamTarget target = 2;
+  uint32 total = 3;
+  repeated TeamData list = 4;
+}
+message C2S_TeamFindAndApplyJoin {
+  TeamTarget target = 1;
+}
+// 队长请求转移队长
+message C2S_ReqTeamHandOver {
+  uint32 roleId = 1;
+}
+// 队员确认接管队伍
+message S2C_TeamHandOver {
+}
+message C2S_TeamHandOver {
+
+}
+// 队长邀请人加入队伍
+message C2S_TeamInvite {
+  uint32 roleId = 1;
+}
+// 受到别人邀请入队
+message S2C_TeamInvite {
+  uint32 teamId = 1;
+  string leaderName = 3;
+}
+// 处理入队邀请
+message C2S_TeamHandleInvite {
+  uint32 teamId = 1;
+  bool  agree = 2;
+}
+message C2S_TeamFind {
+  uint32 teamId = 1;
+}
+message S2C_TeamFind {
+  TeamData data = 1;
+}
+message C2S_TeamRecruit {
+  string msg = 1;
+  ChatMessageType type = 2;
+  repeated string  extras = 3; //扩展参数，用于分享
+}
+message C2S_TeamTarget {
+  TeamTarget target = 1;
+}
+message S2C_TeamTarget {
+  TeamTarget target = 1;
+}
+message C2S_TeamApplyLeader {
+
+}
+message S2C_TeamApplyLeader {
+  uint32 roleId = 1;
+  string roleName = 2;
+}
+message C2S_TeamHandleApplyLeader {
+  uint32 roleId = 1;
+  bool  agree = 2;
+}
+message C2S_TeamLeave {
+
+}
+message S2C_TeamLeave {
+  uint32 roleId = 1;
+}
+message C2S_TeamBack {
+
+}
+message S2C_TeamBack {
+  uint32 roleId = 1;
+}
+message C2S_TeamBackInvite {
+  uint32 roleId = 1;
+}
+message S2C_TeamBackInvite {
+
+}
+
+message C2S_FriendList {
+
+}
+message S2C_FriendList {
+  repeated RoleInfo list = 1;
+}
+message S2C_FriendAdd {
+  RoleInfo data = 1;
+}
+message S2C_FriendDel {
+  uint32 roleId = 1;
+}
+message S2C_FriendApplyList {
+  repeated RoleInfo list = 1;
+}
+message S2C_FriendApplyAdd {
+  RoleInfo data = 1;
+}
+message S2C_FriendApplyDel {
+  uint32 roleId = 1;
+}
+message C2S_FriendApply {
+  uint32 roleId = 1;
+}
+message C2S_FriendDel {
+  uint32 roleId = 1;
+}
+message C2S_FriendSearch {
+  uint32 pageIndex = 1; //从1开始
+  string search = 2;
+}
+message S2C_FriendSearch {
+  uint32 pageIndex = 1;
+  string search = 2;
+  uint32 total = 3;
+  repeated RoleInfo list = 4;
+}
+message C2S_FriendHandleApply {
+  uint32 roleId = 1;
+  bool  agree = 2;
+}
+message C2S_FriendInfo {
+  uint32 roleId = 1;
+}
+message S2C_FriendInfo {
+  RoleInfo data = 1;
+}
+
+// 帮派数据
+message S2C_SectData {
+  SectData data = 1;
+}
+message C2S_SectList {
+  uint32 pageIndex = 1; //从1开始
+  string search = 2; //搜索条件, 可为空
+}
+message S2C_SectList {
+  uint32 pageIndex = 1; //从1开始
+  string search = 2;
+  uint32 total = 3;
+  repeated SectData list = 4;
+}
+message C2S_SectApplyJoin {
+  uint32 id = 1;
+}
+message C2S_SectCreate {
+  string name = 1;
+  string desc = 2;
+}
+message C2S_SectMemberList {
+  uint32 pageIndex = 1;
+}
+message S2C_SectMemberList {
+  uint32 pageIndex = 1;
+  uint32 total = 2;
+  repeated SectMemberData list = 3;
+}
+message S2C_SectMemberLeave {
+  uint32 roleId = 1;
+}
+message C2S_SectJoinApplyList {
+
+}
+message S2C_SectJoinApplyList {
+  // uint32 pageIndex = 1;
+  uint32 total = 1;
+  repeated SectApplyJoinData list = 2;
+}
+message S2C_SectJoinApplyAdd {
+  SectApplyJoinData data = 1;
+}
+message S2C_SectJoinApplyDel {
+  uint32 roleId = 1;
+}
+message C2S_SectHandleJoinApply {
+  uint32 roleId = 1;
+  bool  agree = 2;
+}
+message C2S_SectExit {
+
+}
+message C2S_SectKickout {
+  uint32 id = 1;
+}
+message C2S_SectContrib {
+  uint32 jade = 1;
+}
+message C2S_SectAppoint {
+  uint32 roleId = 1;
+  SectMemberType type = 2;
+}
+message S2C_SectAppoint {
+  uint32 roleId = 1;
+  SectMemberType type = 2;
+}
+message C2S_SectSilent {
+  uint32 roleId = 1;
+}
+message S2C_SectSilent {
+  uint32 roleId = 1;
+  bool silent = 2;
+
+  uint32 opRoleId = 3;
+  string opName = 4;
+  SectMemberType opJob = 5;
+}
+message C2S_SectChangeDesc {
+  string desc = 1;
+}
+message S2C_SectChangeDesc {
+  uint32 id = 1;
+  string desc = 2;
+}
+
+message C2S_Chat {
+  ChatMessageType type = 1;
+  string msg = 2; //文本消息
+  bytes voice = 3; //语音消息
+  uint32 toRoleId = 4; //目标角色id
+  repeated string extras = 5;
+  ChatMessageShareEquipData shareEquip = 6;
+  ChatMessageShareOrnamentData shareOrnament = 7;
+  ChatMessageSharePetData sharePet = 8;
+  ChatMessageSharePetOrnamentData sharePetOrnament = 9;
+
+  uint32 teamId = 10; // 客户端不要用
+}
+message S2C_Chat {
+  ChatMessage msg = 1;
+}
+message C2S_ChatSilent {
+  uint32 roleId = 1;
+}
+message S2C_ChatSilent {
+  uint32 roleId = 1;
+  bool silent = 2;
+}
+
+message C2S_ChatFroze {
+  uint32 roleId = 1;
+}
+
+message C2S_RankLevel {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankLevel {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated LvRankMemberData list = 3;
+}
+message C2S_RankJade {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankJade {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated JadeRankMemberData list = 3;
+}
+message C2S_RankPay {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankPay {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated PayRankMemberData list = 3;
+}
+message C2S_RankSldh {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankSldh {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated SldhRankMemberData list = 3;
+}
+message C2S_RankWzzz {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankWzzz {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated WzzzRankMemberData list = 3;
+}
+message C2S_RankSect {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankSect {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated SectRankMemberData list = 3;
+}
+message C2S_RankSinglePk {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankSinglePk {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated SinglePkRankMemberData list = 3;
+}
+
+message C2S_RankDaLuanDou {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankDaLuanDou {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated DaLuanDouRankMemberData list = 3;
+}
+
+message S2C_TitleList {
+  repeated TitleData list = 1;
+}
+message S2C_TitleAdd {
+  TitleData data = 1;
+}
+message S2C_TitleDel {
+  uint32 id = 1;
+}
+message C2S_TitleChange {
+  uint32 id = 1;
+  bool active = 2;
+}
+message S2C_TitleChange {
+  uint32 id = 1;
+  bool active = 2;
+}
+
+
+// 队伍的位置信息
+message S2C_MapSyncPos {
+  uint32 map = 1;
+  int32 x = 2;
+  int32 y = 3;
+  bool immediate = 4;
+}
+// 跳转地图了, 通知服务器
+message C2S_MapChange {
+  uint32  map = 1;
+  int32 x = 2;
+  int32 y = 3;
+}
+// 移动
+message C2S_MapMove {
+  int32 x = 1;
+  int32 y = 2;
+}
+// 角色停止移动
+message C2S_MapStop {
+  int32 x = 1;
+  int32 y = 2;
+  // 队长停止移动的时候需要把路线告诉后端
+  repeated Pos path = 3;
+}
+// 同步视野
+message S2C_MapSyncView {
+  repeated MapObjectData addList = 1;
+  repeated uint32 delList = 2;
+  repeated MapObjectData upList = 3;
+}
+
+
+message C2S_NpcShopItems {
+  uint32 npcCfgId = 1;
+}
+message S2C_NpcShopItems {
+  uint32 npcCfgId = 1;
+  repeated ShopItem list = 2;
+}
+message C2S_NpcShopBuy {
+  uint32 npcCfgId = 1;
+  uint32 cfgId = 2;
+  uint32 num = 3;
+}
+message S2C_NpcShopUpdate {
+  uint32 cfgId = 1;
+  uint32 num = 2;
+}
+// 多宝阁
+message C2S_ShopItems {
+  uint32 type = 1;
+}
+message S2C_ShopItems {
+  uint32 type = 1;
+  repeated ShopItem list = 2;
+}
+message C2S_ShopBuy {
+  uint32 cfgId = 1;
+  uint32 num = 2;
+}
+
+message MallItem {
+  uint32 id = 1; //商品id
+  MallItemType type = 2; //商品类型
+  uint32 cfgId = 3; //对应配置id
+  uint32 price = 4; //单价
+  uint32 num = 5; //剩余多少个
+}
+message C2S_MallItems {
+  MallItemKind kind = 1;
+  repeated uint32 cfgIds = 2; //为空表示全部
+  uint32 pageIndex = 3;
+  bool asc = 4; //按价格升序排序
+}
+message S2C_MallItems {
+  uint32 pageIndex = 1;
+  uint32 total = 2;
+  repeated MallItem list = 3;
+}
+message C2S_MallAddItem {
+  uint32 dbId = 1; //装备实例id/宠物实例id
+  uint32 cfgId = 2; //物品配置id
+  uint32 price = 3;
+  uint32 num = 4;
+  MallItemType type = 5;
+}
+message S2C_MallAddItem {
+  MallItem data = 1;
+}
+message C2S_MallDelItem {
+  uint32 id = 1;
+}
+message S2C_MallDelItem {
+  uint32 id = 1;
+}
+message C2S_MallBuy {
+  uint32 id = 1;
+  uint32 num = 2;
+}
+message S2C_MallBuy {
+  uint32 id = 1;
+  MallItemType type = 2;
+  uint32 dbId = 3;
+  uint32 cfgId = 4;
+  uint32 price = 5;
+  uint32 num = 6; //实际购买到的个数
+  uint32 spareNum = 7; //剩余个数
+}
+message C2S_MallItemDetail {
+  uint32 id = 1;
+}
+message S2C_MallItemDetail {
+  uint32 id = 1;
+  MallItemType type = 2; //商品类型
+  bytes detail = 3; //商品详情
+}
+message MallMyItem {
+  uint32 id = 1; //商品id
+  MallItemType type = 2; //商品类型
+  uint32 dbId = 3; //来源id
+  uint32 cfgId = 4;
+  uint32 price = 5; //单价
+  uint32 num = 6; //剩余多少个
+  uint32 time = 7; //剩余时间s
+  uint32 status = 8; //状态
+}
+message C2S_MallMyItems {
+
+}
+message S2C_MallMyItems {
+  repeated MallMyItem list = 1;
+}
+message C2S_MallUpdateMyItem {
+  uint32 id = 1;
+  uint32 price = 2;
+}
+message S2C_MallUpdateMyItem {
+  uint32 id = 1;
+  uint32 price = 2;
+}
+
+// 邮件
+message C2S_MailList {
+
+}
+message S2C_MailList {
+  repeated MailData list = 1;
+}
+message S2C_MailAdd {
+  MailData data = 2;
+}
+message C2S_MailPick {
+  repeated uint32 ids = 1;
+}
+message S2C_MailPick {
+  repeated uint32 ids = 1;
+}
+message C2S_MailDel {
+  repeated uint32 ids = 1;
+}
+message S2C_MailDel {
+  repeated uint32 ids = 1;
+}
+
+
+// 任务数据
+message S2C_TaskList {
+  // 当前接下的任务集合
+  repeated TaskData list = 1;
+  // 日常任务计数
+  repeated TaskPair dailyCnt = 2;
+  // 副本任务计数
+  repeated TaskPair instanceCnt = 3;
+}
+message C2S_TaskTriggerNpcBomb {
+  uint32 onlyId = 1;
+  uint32 cfgId = 2;
+}
+message C2S_TaskSubmitTalkNpc {
+  uint32 taskId = 1;
+  uint32 taskStep = 2;
+  uint32 onlyId = 3;
+  uint32 cfgId = 4;
+}
+message C2S_TaskSubmitGatherNpc {
+  uint32 onlyId = 1;
+  uint32 cfgId = 2;
+}
+message C2S_TaskSubmitDoAction {
+  uint32 mapId = 1;
+  int32 mapX = 2;
+  int32 mapY = 3;
+}
+message C2S_TaskInceptDaily {
+  uint32 onlyId = 1;
+  uint32 group = 2;
+}
+message C2S_TaskInceptInstance {
+  uint32 onlyId = 1;
+  uint32 taskId = 2;
+}
+message C2S_TaskAbort {
+  uint32 taskId = 1;
+}
+message C2S_TaskDailyData {
+
+}
+message S2C_TaskDailyData {
+  // 日常任务的计数, key是task group
+  repeated UintPair dailyCnt = 1;
+  // 副本任务的计数, key是task id
+  repeated UintPair instanceCnt = 2;
+  // 当前开启的日常活动
+  repeated uint32 dailyStarted = 3;
+  // 活动积分
+  repeated FloatPair activeScore = 4;
+  // 已经领取过的活动奖励
+  repeated uint32 beenTake = 5;
+  // 今日杀星次数
+  uint32 starNum = 6;
+  // 今日灵猴次数
+  uint32 monkeyNum = 7;
+  // 今日金蟾送宝次数
+  uint32 jinChanSongBaoNum = 8;
+  // 今日金翅大鹏次数
+  uint32 eagleNum = 9;
+}
+message C2S_TaskActivePrize {
+  uint32 index = 1;
+}
+
+// 战斗系统
+message S2C_BattleStart {
+  uint32 battleId = 1;
+  uint32 onlyId = 2; //我的BattleOnlyId
+  BattleTeamData team1 = 3; //我所在的team
+  BattleTeamData team2 = 4; //地方队伍
+}
+message S2C_BattleStop {
+  uint32 battleId = 1;
+  bool  win = 2;
+  BattleType type = 3;  
+}
+message S2C_BattleRoundBegine {
+  repeated BattleAttackData attacks = 1;
+  repeated BattleStageEffect effects = 2;
+}
+message S2C_BattleRoundEnd {
+  uint32 round = 1;
+  repeated BattleActionData list = 2;
+}
+message C2S_BattleAttack {
+  uint32 onlyId = 1;
+  BattleActionType actionType = 2;
+  uint32 actionId = 3;
+  uint32 targetId = 4;
+}
+message S2C_BattleAttack {
+  uint32 onlyId = 1;
+  BattleActionType actionType = 2;
+  uint32 actionId = 3;
+  uint32 targetId = 4;
+}
+
+message C2S_TianJiangLingHouFight {
+  uint32 npcOnlyId = 1;
+}
+
+message C2S_PK {
+  uint32 targetRoleId = 1;
+}
+
+// 皇城决斗
+message C2S_HcPk {
+  uint32 targetRoleId = 1; //接受人
+  string text = 2; //战书内容,可以为空
+}
+message S2C_HcPk {
+  HcRoleInfo sender = 1;
+  HcRoleInfo recver = 2;
+  string text = 3;
+  int32 seconds = 4;
+  uint32 win = 5; //0-未出结果 1-sender胜利，2-recver胜利, 3-平局
+}
+message C2S_HcHandleApply {
+  bool  agree = 1;
+}
+message C2S_HcRoleList {
+
+}
+message S2C_HcRoleList {
+  repeated RoleInfo senderList = 1;
+  repeated RoleInfo recverList = 2;
+}
+message HcRoleInfo {
+  uint32 id = 1;
+  string name = 2;
+  uint32 relive = 3;
+  uint32 level = 4;
+  uint32 cfgId = 5;
+  uint32 state = 6; //0未准备，1准备，2拒绝
+}
+
+message C2S_ChallengeNpc {
+  uint32 onlyId = 1;
+  uint32 cfgId = 2;
+}
+
+message S2C_StarWaiting {
+
+}
+
+message S2C_ZhenBuKuiState {
+  uint32 mapId = 1;
+  int32 mapX = 2;
+  int32 mapY = 3;
+}
+
+// 水路大会
+message C2S_SldhSign {
+
+}
+message S2C_SldhSign {
+  SldhState state = 1;
+}
+message C2S_SldhUnSign {
+
+}
+message S2C_SldhUnSign {
+  bool isAuto = 1;
+}
+message C2S_SldhInfo {
+
+}
+message S2C_SldhInfo {
+  SldhState state = 1;
+  uint32 turn = 2;
+  bool isSign = 3;
+  uint32 score = 4;
+  uint32 gongJi = 5;
+  uint32 win = 6;
+  uint32 lost = 7;
+
+  repeated RoleInfo myTeam = 10;
+  repeated SldhTeamData signTeams = 11;
+  repeated SldhFightTeamData fightTeams = 12;
+}
+message S2C_SldhState {
+  SldhState state = 1;
+  bool signed = 2;
+}
+message S2C_SldhMatch {
+  repeated RoleInfo team1 = 1;
+  repeated RoleInfo team2 = 2;
+}
+message S2C_SldhBattleResult {
+  bool  win = 1;
+  uint64 exp = 2;
+  uint64 petExp = 3;
+  uint32 score = 4;
+  uint32 gongJi = 5;
+}
+
+// 王者之战
+message C2S_WzzzSign {
+
+}
+message S2C_WzzzSign {
+  WzzzState state = 1;
+}
+message C2S_WzzzUnSign {
+
+}
+message S2C_WzzzUnSign {
+  bool isAuto = 1;
+}
+message C2S_WzzzInfo {
+
+}
+message S2C_WzzzInfo {
+  WzzzState state = 1;
+  uint32 turn = 2;
+  bool isSign = 3;
+  uint32 score = 4;
+  uint32 GongJi = 5;
+  uint32 win = 6;
+  uint32 lost = 7;
+
+  repeated RoleInfo myTeam = 10;
+  repeated WzzzTeamData signTeams = 11;
+  repeated WzzzFightTeamData fightTeams = 12;
+}
+message S2C_WzzzState {
+  WzzzState state = 1;
+  bool signed = 2;
+}
+message S2C_WzzzMatch {
+  repeated RoleInfo team1 = 1;
+  repeated RoleInfo team2 = 2;
+}
+message S2C_WzzzBattleResult {
+  bool  win = 1;
+  uint64 exp = 2;
+  uint64 petExp = 3;
+  uint32 score = 4;
+  uint32 GongJi = 5;
+}
+
+// 帮战退出状态补丁
+message S2C_SectWarStateFix {
+}
+
+// 帮战
+message S2C_SectWarState {
+  SectWarState state = 1;
+  // 我方帮派
+  SectWarSectData my = 2;
+  // 敌方帮派
+  SectWarSectData enemy = 3;
+  // 是否已入场
+  bool isEnter = 4;
+}
+message C2S_SectWarEnter {
+
+}
+message S2C_SectWarEnter {
+  int32 camp = 1;
+  SectWarPlace place = 2;
+  SectWarRoleState state = 3;
+}
+message C2S_SectWarExit {
+
+}
+message S2C_SectWarExit {
+  SectWarRoleData data = 1;
+}
+message C2S_SectWarChangePlace {
+  SectWarPlace place = 1;
+}
+message S2C_SectWarChangePlace {
+  SectWarPlace place = 1;
+}
+message C2S_SectWarReadyPk {
+
+}
+message S2C_SectWarReadyPk {
+  SectWarRoleData sender = 1;
+  SectWarRoleData recver = 2;
+}
+message C2S_SectWarCancelPk {
+
+}
+message S2C_SectWarCancelPk {
+  SectWarRoleData sender = 1;
+}
+message S2C_SectWarPkResult {
+  SectWarRoleData win = 1;
+  SectWarRoleData lost = 2;
+}
+message S2C_SectWarDoorHp {
+  int32 camp = 1;
+  int32 doorHp = 2;
+  int32 add = 3;
+}
+message S2C_SectWarResult {
+  bool  win = 1;
+  uint64 exp = 2;
+  uint64 petExp = 3;
+  uint32 money = 4;
+  uint32 contrib = 5;
+  repeated ItemData items = 6;
+}
+message C2S_SectWarGrabCannon {
+
+}
+message  S2C_SectWarGrabCannon {
+  SectWarRoleData graber = 1;
+  // 离发射剩余的秒数
+  uint32 seconds = 2;
+}
+message S2C_SectWarBreakCannon {
+  SectWarRoleData graber = 1;
+  SectWarRoleData breaker = 2;
+}
+message S2C_SectWarFireCannon {
+  SectWarRoleData graber = 1;
+}
+message C2S_SectWarLockDoor {
+
+}
+message S2C_SectWarLockDoor {
+  SectWarRoleData locker = 1;
+}
+message C2S_SectWarCancelDoor {
+
+}
+message S2C_SectWarCancelDoor {
+  SectWarRoleData locker = 1;
+}
+message C2S_SectWarBreakDoor {
+  uint32 roleId = 1;
+}
+message S2C_SectWarBreakDoor {
+  SectWarRoleData locker = 1;
+  SectWarRoleData breaker = 2;
+}
+message S2C_SectWarFireDoor {
+  int32 camp = 1;
+}
+message C2S_SectWarFreePk {
+  uint32 roleId = 1;
+}
+message S2C_SectWarFreePk {
+  SectWarRoleData role1 = 1; //挑战者
+  SectWarRoleData role2 = 2; //被挑战者
+}
+message C2S_SectWarInfo {
+
+}
+message S2C_SectWarInfo {
+  SectWarInfoitem my = 1;
+  SectWarInfoitem enemy = 2;
+}
+message SectWarInfoitem {
+  uint32 id = 1;
+  string name = 2;
+  uint32 ownerId = 3;
+  uint32 contrib = 4;
+  uint32 createTime = 5;
+  uint32 memberNum = 6;
+}
+
+
+
+// 单人PK
+message C2S_SinglePkSign {
+
+}
+message S2C_SinglePkSign {
+  SinglePkState state = 1;
+}
+message C2S_SinglePkUnSign {
+
+}
+message S2C_SinglePkUnSign {
+  bool isAuto = 1;
+}
+message C2S_SinglePkInfo {
+
+}
+message S2C_SinglePkInfo {
+  SinglePkState state = 1;
+  uint32 season = 2;
+  bool isSign = 3;
+  uint32 score = 4;
+  uint32 win = 5;
+  uint32 lost = 6;
+  uint32 number = 7;
+}
+message S2C_SinglePkState {
+  SinglePkState state = 1;
+  bool signed = 2;
+}
+message S2C_SinglePkMatch {
+  repeated RoleInfo my = 1;
+  repeated RoleInfo enemy = 2;
+}
+message S2C_SinglePkBattleResult {
+  bool  win = 1;
+  uint64 exp = 2;
+  uint64 petExp = 3;
+  int32 score = 4;
+}
+
+// 大乱斗PK
+message C2S_DaLuanDouSign {
+
+}
+message S2C_DaLuanDouSign {
+  DaLuanDouState state = 1;
+}
+message C2S_DaLuanDouUnSign {
+
+}
+message S2C_DaLuanDouUnSign {
+  bool isAuto = 1;
+}
+message C2S_DaLuanDouInfo {
+
+}
+message S2C_DaLuanDouInfo {
+  DaLuanDouState state = 1;
+  uint32 turn = 2;
+  bool isSign = 3;
+  uint32 score = 4;
+  uint32 win = 5;
+  uint32 lost = 6;
+  uint32 number = 7;
+
+  repeated RoleInfo myTeam = 10;
+  repeated DldTeamData signTeams = 11;
+  repeated DldFightTeamData fightTeams = 12;
+}
+
+message S2C_DaLuanDouState {
+  DaLuanDouState state = 1;
+  bool signed = 2;
+}
+
+message C2S_DaLuanDouPk {
+  uint32 roleId = 1;
+}
+message S2C_DaLuanDouMatch {
+  repeated RoleInfo my = 1;
+  repeated RoleInfo enemy = 2;
+}
+message S2C_DaLuanDouBattleResult {
+  bool  win = 1;
+  uint64 exp = 2;
+  uint64 petExp = 3;
+  int32 score = 4;
+}
+// message C2S_DaLuanDouEnter {
+
+// }
+// message S2C_DaLuanDouEnter {
+//   int32 camp = 1;
+//   SectWarPlace place = 2;
+//   SectWarRoleState state = 3;
+// }
+// message S2C_DaLuanDouPk {
+//   SectWarRoleData sender = 1;
+//   SectWarRoleData recver = 2;
+// }
+
+// 神兽降临
+message C2S_SsjlSign {
+}
+message S2C_SsjlSign {
+  // 活动状态
+  SsjlState state = 1;
+  // 活动奖励
+  uint32 reward = 2;
+  // 开始时间
+  uint32 startTime = 3;
+  // 结束时间
+  uint32 endTime = 4;
+}
+message C2S_SsjlUnSign {
+}
+message S2C_SsjlUnSign {
+  // 是否通知？
+  bool notify = 1;
+}
+message S2C_SsjlState {
+  // 活动状态
+  SsjlState state = 1;
+  // 活动奖励
+  uint32 reward = 2;
+  // 是否已经报名？
+  bool signed = 3;
+  // 开始时间
+  uint32 startTime = 4;
+  // 结束时间
+  uint32 endTime = 5;
+}
+message S2C_SsjlResult {
+  string msg = 1;
+}
+
+// 经验兑换潜能--信息
+message C2S_ExpExchangeInfo {
+}
+message S2C_ExpExchangeInfo {
+  ExpExchangeInfo info = 1;
+}
+// 经验兑换潜能--兑换
+message C2S_ExpExchange {
+}
+message S2C_ExpExchange {
+  ExpExchangeInfo info = 1;
+  string msg = 2;
+}
+
+// 限时充值排行榜--排行榜信息
+message C2S_LimitChargeRankInfo {
+}
+message S2C_LimitChargeRankInfo {
+  // 是否显示排行榜？
+  bool enabled = 1;
+  // 活动开始时间戳
+  uint32 startTimestamp = 2;
+  // 活动结束时间戳
+  uint32 endTimestamp = 3;
+  // 排行榜
+  repeated LimitChargeRankMemberData list = 4;
+  // 我的排名
+  uint32 myRank = 5;
+  // 我的结算排名 (1-10名有奖励，才是有效数据)
+  uint32 mySettleRank = 6;
+  //结算奖励领取状态(0不能领取(没有奖励)，1未领取(可以领取)，2已经领取)
+  uint32 myRecState = 7;
+}
+
+// 限时充值排行榜--排行奖励领取
+message C2S_LimitChargeRankGiftGet {
+}
+message S2C_LimitChargeRankGiftGet {
+  string msg = 1;
+}
+
+// 限时等级排行榜--排行榜信息
+message C2S_LimitLevelRankInfo {
+}
+message S2C_LimitLevelRankInfo {
+  // 是否显示排行榜？
+  bool enabled = 1;
+  // 活动开始时间戳
+  uint32 startTimestamp = 2;
+  // 活动结束时间戳
+  uint32 endTimestamp = 3;
+  // 排行榜
+  repeated LimitLvRankMemberData list = 4;
+  // 我的排名
+  uint32 myRank = 5;
+    // 我的结算排名 (1-10名有奖励，才是有效数据)
+  uint32 mySettleRank = 6;
+  //结算奖励领取状态(0不能领取(没有奖励)，1未领取(可以领取)，2已经领取)
+  uint32 myRecState = 7;
+}
+
+// 限时等级排行榜--排行奖励领取
+message C2S_LimitLevelRankGiftGet {
+}
+message S2C_LimitLevelRankGiftGet {
+  string msg = 1;
+}
+
+// 获取VIP信息
+message C2S_VipInfo {
+}
+message S2C_VipInfo {
+  // 当前VIP等级
+  uint32 vipLevel = 1;
+  // 当前VIP经验
+  uint32 vipExp = 2;
+  // 当前能否领取奖励
+  bool canGet = 3;
+}
+// 获取VIP奖励
+message C2S_VipGiftGet {
+}
+message S2C_VipGiftGet {
+  string msg = 1;
+}
+// 双倍经验--信息
+message C2S_X2ExpInfo {
+}
+message S2C_X2ExpInfo {
+  // 信息
+  X2ExpInfo info = 1;
+}
+// 双倍经验--领取
+message C2S_X2ExpGet {
+}
+message S2C_X2ExpGet {
+  // 信息
+  X2ExpInfo info = 1;
+  // 错误信息
+  string msg = 2;
+}
+
+//天策符--列表
+message C2S_TianceFuGetList {
+}
+message S2C_TianceFuGetList {
+  // 天策符列表
+  repeated TianceFu list = 1;
+}
+//天策符--合成
+message C2S_TianceFuHeCheng {
+  // 要合成的数量
+  uint32 num = 1;
+}
+//天策符--鉴定
+message C2S_TianceFuJianDing {
+  // 天策符类型
+  TianceFuType type = 1;
+  // 要鉴定的数量
+  uint32 num = 2;
+}
+message S2C_TianceFuJianDing {
+  // 新获得天策符
+  repeated TianceFu list = 1;
+}
+//天策符--分解
+message C2S_TianceFuFengJie {
+  // 要分解的天策符ID列表
+  repeated string list = 1;
+}
+//天策符--使用
+message C2S_TianceFuUse {
+  // 天策符ID
+  string id = 1;
+  // 使用状态
+  TianceFuState  state = 2;
+}
+//打开天演策界面
+message C2S_TianYanCeOpen {
+}
+message S2C_TianYanCeOpen {
+  // 天演策等级
+  uint32 level = 1;
+}
+//天演策升级
+message C2S_TianYanCeUpgrade {
+  // 打算升几级？
+  uint32 level = 1;
+}
+//天策符--百变鉴定
+message C2S_TianceFuJianDingBaiBian {
+  // 要鉴定物品ID
+  uint32 itemId = 1;
+  // 要鉴定成的天策符ID
+  uint32 tianCeFuId = 2;
+}
+
+//切割--进入
+message C2S_QieGeEnter {
+}
+message S2C_QieGeEnter {
+  // 等级
+  uint32 level = 1;
+  // 经验
+  uint32 exp = 2;
+}
+//切割--升级
+message C2S_QieGeUpgrade {
+  //是否快速升级
+  bool quick = 1;
+}
+
+//神之力--查询
+message C2S_ShenZhiLiInfo {
+}
+message S2C_ShenZhiLiInfo {
+  uint32 HurtLv = 1;      // 伤害等级
+  uint32 HpLv = 2;        // 气血等级
+  uint32 SpeedLv = 3;     // 速度等级
+}
+//神之力--升级
+message C2S_ShenZhiLiUpgrade {
+  //升级类型
+  uint32 LvType = 1;        //1伤害升级 2气血升级 3速度升级
+}
+
+//成神之路副本信息--查询
+message C2S_CszlInfo {
+}
+message S2C_CszlInfo {
+  uint32 Layer = 1;             // 爬塔层数
+  uint32 TodayTimes = 2;        //今天挑战次数
+}
+//成神之路--挑战副本
+message C2S_CszlChallenge {}
+// message S2C_CszlChallenge {
+  
+// }
+//成神之路--积分跳过本层
+message C2S_CszlScoreSkip {}
+
+//成神之路--爬塔层数排行榜
+message C2S_RankCszlLayer {
+  uint32 pageIndex = 1; //页码,从1开始
+}
+message S2C_RankCszlLayer {
+  uint32 pageIndex = 1; //页码
+  uint32 myRank = 2; //我的排行
+  repeated CszlRankMemberData list = 3;
+}
+
+//成神之路--积分重置
+message C2S_CszlScoreReset {}
+
+//观战--进入
+message C2S_EnterWatchBattle {
+  uint32 battleId = 1;
+  uint32 campId = 2;
+  bool isSectWar = 3;
+}
+//观战--退出
+message C2S_ExitWatchBattle {
+}
+
+//物品商店--进入
+message C2S_EnterItemShop {
+}
+message S2C_EnterItemShop {
+  // 商品列表
+  repeated ItemShopGood goodList = 1;
+}
+//物品商店--下单购买
+message C2S_OrderItemShop {
+  // 支付类型
+  uint32 payType = 1;
+  // 商品ID
+  uint32 id = 2;
+  // 购买数目
+  uint32 num = 3;
+}
+message S2C_OrderItemShop {
+  // 支付URL
+  string url = 1;
+}
+// 红包--进入主界面
+message C2S_RedEnterMain {
+}
+message S2C_RedEnterMain {
+  repeated RedItem list = 1;
+}
+// 红包--详情
+message C2S_RedDetail {
+  // 红包ID
+  uint32 id = 1;
+}
+message S2C_RedDetail {
+  // ID
+  uint32 id = 1;
+  // 时间
+  uint32 timestamp = 2;
+  // 祝福
+  string wish = 3;
+  // 仙玉
+  uint32 jade = 4;
+  // 个数
+  uint32 total = 5;
+  // 发送角色
+  RoleInfo role = 6;
+  // 领取人--列表
+  repeated RedGetter getterList = 7;
+}
+// 红包--历史记录
+message C2S_RedHistory {
+  // 类型
+  RedType type = 1;
+  // 是否接收？
+  bool recived = 2;
+}
+message S2C_RedHistory {
+  // 类型
+  RedType type = 1;
+  // 是否接收？
+  bool recived = 2;
+  // 记录列表
+  repeated RedLog logList = 3;
+}
+// 红包--发送
+message C2S_RedSend {
+  // 类型
+  RedType type = 1;
+  // 祝福
+  string wish = 2;
+  // 仙玉
+  uint32 jade = 3;
+  // 个数
+  uint32 total = 4;
+}
+message S2C_RedSend {
+  // ID
+  uint32 id = 1;
+  // 类型
+  RedType type = 2;
+  // 祝福
+  string wish = 3;
+  // 仙玉
+  uint32 jade = 4;
+  // 个数
+  uint32 total = 5;
+  // 发送角色
+  RoleInfo role = 6;
+}
+// 红包--抢包
+message C2S_RedGet {
+  // ID
+  uint32 id = 1;
+}
+message S2C_RedGet {
+  // ID
+  uint32 id = 1;
+  // 时间
+  uint32 timestamp = 2;
+  // 祝福
+  string wish = 3;
+  // 仙玉
+  uint32 jade = 4;
+  // 个数
+  uint32 total = 5;
+  // 发送角色
+  RoleInfo role = 6;
+  // 领取人--列表
+  repeated RedGetter getterList = 7;
+}
+// 全服烟花
+message S2C_FireWorks {
+  RoleInfo role = 1;
+  uint32 bindJade = 2;
+}
+
+// 宠物配饰--列表
+message S2C_PetOrnamentList {
+  repeated PetOrnamentData list = 1;
+}
+// 宠物配饰--添加
+message S2C_PetOrnamentAdd {
+  PetOrnamentData data = 1;
+}
+// 宠物配饰--删除
+message S2C_PetOrnamentDel {
+  repeated uint32 list = 1;
+}
+// 宠物配饰--信息
+message S2C_PetOrnamentInfo {
+  PetOrnamentData data = 1;
+}
+// 宠物配饰--分解
+message C2S_PetOrnamentFenJie {
+  repeated uint32 list = 1;
+}
+message S2C_PetOrnamentFenJie {
+  repeated uint32 list = 1;
+  repeated ItemData itemList = 2;
+}
+// 宠物配饰--打造
+message C2S_PetOrnamentDaZhao {
+  uint32 itemId = 1;
+}
+message S2C_PetOrnamentDaZhao {
+  PetOrnamentData data = 1;
+  string error = 2;
+}
+// 宠物配饰--装备
+message C2S_PetOrnamentEquip {
+  uint32 id = 1;
+  uint32 petId = 2;
+}
+// 宠物配饰--卸载
+message C2S_PetOrnamentUnEquip {
+  uint32 id = 1;
+}
+// 宠物配饰--锁定
+message C2S_PetOrnamentLock {
+  uint32 id = 1;
+}

@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FreeSql" Version="3.2.692" />
+        <PackageReference Include="FreeSql.Provider.MySql" Version="2.5.200" />
+        <PackageReference Include="FreeSql.Repository" Version="2.5.200" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="3.4.3">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Orleans.Core" Version="3.4.3" />
+        <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="3.4.3" />
+        <PackageReference Include="Microsoft.Orleans.OrleansTelemetryConsumers.Linux" Version="3.4.3" />
+        <PackageReference Include="Microsoft.Orleans.Server" Version="3.4.3" />
+        <PackageReference Include="NLog" Version="4.7.10" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="1.7.3" />
+        <PackageReference Include="OrleansDashboard" Version="3.1.0" />
+        <PackageReference Include="PinYinConverterCore" Version="1.0.2" />
+        <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+        <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
+        <PackageReference Include="ToolGood.Words" Version="3.0.2.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Libs\Ddxy.Common\Ddxy.Common.csproj" />
+        <ProjectReference Include="..\Libs\Ddxy.GrainInterfaces\Ddxy.GrainInterfaces.csproj" />
+        <ProjectReference Include="..\Libs\Ddxy.Protocol\Ddxy.Protocol.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="nlog.config">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Include="Properties\launchSettings.json">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

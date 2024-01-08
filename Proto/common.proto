@@ -1,0 +1,2257 @@
+syntax = "proto3";
+package xproto;
+option csharp_namespace = "Ddxy.Protocol";
+
+enum Race {
+  Race_Unkown = 0;
+  Race_Ren = 1;
+  Race_Xian = 2;
+  Race_Mo = 3;
+  Race_Gui = 4;
+  Race_Long = 5;
+}
+
+enum Sex {
+  Sex_Unkown = 0;
+  Sex_Male = 1;
+  Sex_Female = 2;
+}
+
+enum Errors {
+  Errors_OK = 0;
+  // 服务器内部错误
+  Errors_Internal = 1;
+  // 操作被拒绝
+  Errors_Forbidden = 2;
+  // 请求参数异常
+  Errors_BadRequest = 3;
+  // 登录已过期
+  Errors_NeedLogin = 4;
+  // 昵称已存在
+  Errors_NickNameExists = 5;
+  // 昵称长度不合法
+  Errors_NickNameLengthInvilid = 6;
+  // 昵称不合法，包含敏感词
+  Errors_NickNameInvilid = 7;
+  // 贡币不足
+  Errors_ContribNotEnough = 10;
+  // 银币不足
+  Errors_SilverNotEnough = 11;
+  // 仙玉不足
+  Errors_JadeNotEnough = 12;
+  // 积分不足
+  Errors_GoldNotEnough = 13;
+  // 魔法不足
+  Errors_MpNotEnough = 14;
+}
+
+enum NetError {
+  NetError_Normal = 0;
+  // 服务不可用
+  NetError_Unavailable = 1;
+  // 服务器出错
+  NetError_InternalError = 2;
+  // 数据非法
+  NetError_DataInvalid = 3;
+  // 操作非法
+  NetError_OperaInvalid = 4;
+  // 账号被登录
+  NetError_OtherLogin = 5;
+}
+
+message Pos {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+enum NpcKind {
+  NpcKind_Unkown = 0;
+  NpcKind_Role = 1;
+  NpcKind_Thing = 2;
+  NpcKind_Bomb = 3;
+  NpcKind_Stone = 4;
+}
+
+enum LivingThingType {
+  LivingThingType_Unkown = 0;
+  LivingThingType_Player = 1;
+  LivingThingType_Npc = 2;
+  LivingThingType_Monster = 3;
+  LivingThingType_Pet = 4;
+  LivingThingType_Partner = 5;
+}
+
+enum NpcOwnerType {
+  NpcOwnerType_Unkown = 0;
+  NpcOwnerType_System = 1;
+  NpcOwnerType_Player = 2;
+  NpcOwnerType_Team = 3;
+  NpcOwnerType_Activity = 4;
+}
+
+message NpcOwner {
+  NpcOwnerType Type = 1;
+  uint32  value = 2;
+}
+
+// 在战斗中信息
+message InBattleInfo {
+  uint32 battleId = 1;
+  uint32 campId = 2;
+  bool isSectWar = 3;
+}
+
+message MapObjectData {
+  uint32 onlyId = 1;
+  LivingThingType type = 2;
+
+  uint32 cfgId = 3;
+  string name = 4;
+  uint32 mapId = 5;
+  Int32Value mapX = 6;
+  Int32Value mapY = 7;
+  bool blink = 8; //是否瞬移到该位置
+
+  uint32 roleId = 10;
+  UInt32Value relive = 11;
+  UInt32Value level = 12;
+  UInt32Value teamId = 13;
+  UInt32Value teamLeader = 14;
+  UInt32Value teamMemberCount = 15;
+  NpcOwner owner = 16;
+  UInt32Value sectId = 17;
+  UInt32Value color1 = 18;
+  UInt32Value color2 = 19;
+  MapObjectEquipData weapon = 20;
+  MapObjectEquipData wing = 21;
+  UInt32Value mount = 22;
+  TitleData title = 23;
+
+  BoolValue online = 30; //是否在线
+  BoolValue battle = 31; //是否在战斗中
+  InBattleInfo battleInfo = 32; // 在战斗中信息
+
+  uint32 sectWarId = 40; //帮战id, 仅服务器使用
+  uint32 sldhGroup = 41; //水路分组id, 仅服务器使用
+  bool teamLeave = 42; //当前是否已经暂离队伍, 仅服务器使用
+
+  repeated int32 skins = 43; // 拥有的皮肤（暂时只含足迹和特效）
+  int32 bianshen = 44; // 变身ID
+  uint32 vipLevel = 45; // VIP等级
+  uint32 qiegeLevel = 46; // 切割等级
+  uint32 wzzzGroup = 47;  //王者之战分组id, 仅服务器使用
+}
+
+message MapObjectEquipData {
+  EquipCategory category = 1;
+  uint32 cfgId = 2;
+  uint32 gem = 3;
+  uint32 level = 4;
+}
+
+// 属性-键值对
+message AttrPair {
+  AttrType key = 1;
+  float value = 2;
+}
+
+enum EquipCategory {
+  EquipCategory_Unkown = 0;
+  //新手装备
+  EquipCategory_XinShou = 1;
+  //高级装备
+  EquipCategory_High = 2;
+  //神兵
+  EquipCategory_Shen = 3;
+  //仙器
+  EquipCategory_Xian = 4;
+}
+
+enum EquipPlace {
+  // 未知
+  EquipPlace_Unkown = 0;
+  // 已穿戴
+  EquipPlace_Wear = 1;
+  // 在背包内
+  EquipPlace_Bag = 2;
+  // 在仓库内
+  EquipPlace_Repo = 3;
+}
+
+// 装备数据
+message EquipData {
+  uint32 id = 1;
+  EquipCategory category = 2;
+  uint32 cfgId = 3;
+  uint32 gem = 4;
+  uint32 grade = 5;
+  EquipPlace place = 6;
+  uint32 score = 7;
+
+  // 升星数
+  uint32 starCount = 8;
+  // 升星经验
+  uint32 starExp = 9;
+
+  repeated AttrPair baseAttrs = 10;
+  repeated AttrPair refinAttrs = 11;
+  repeated AttrPair needAttrs = 12;
+}
+
+// 饰品数据
+message OrnamentData {
+  uint32 id = 1;
+  uint32 cfgId = 2;
+  uint32 grade = 3;
+  EquipPlace place = 4;
+  uint32 score = 5;
+  repeated AttrPair baseAttrs = 10;
+}
+
+message SkillData {
+  // 技能id
+  SkillId id = 1;
+  // 熟练度
+  uint32 exp = 2;
+  // 最大熟练度, 和转生等级有关
+  uint32 expMax = 3;
+  // 升级到下一级所需的消耗
+  uint32 upgradeCost = 4;
+  // 技能索引, 分别是0,1,2,3,4,5
+  uint32 idx = 5;
+}
+
+enum ItemType {
+  // 物品
+  ItemType_Item = 0;
+  // 五行天书
+  ItemType_WuXingTianShu = 1;
+  // 材料
+  ItemType_Material = 2;
+  // 药水
+  ItemType_Medicine = 3;
+  // 经验
+  ItemType_Exp = 4;
+  // 银两
+  ItemType_Silver = 5;
+  // 仙玉
+  ItemType_Jade = 6;
+  // 神兵
+  ItemType_ShenBing = 7;
+  // 仙器
+  ItemType_XianQi = 8;
+  // 召唤兽
+  ItemType_Pet = 9;
+  // 技能书
+  ItemType_SkillBook = 10;
+}
+
+message ItemData {
+  uint32 id = 1;
+  uint32 num = 2;
+}
+
+// 方案数据
+message SchemeData {
+  // 方案id
+  uint32 id = 1;
+  string name = 2;
+  bool active = 3;
+  // 穿戴的装备, 按照1~6的顺序存放
+  repeated uint32 equips = 4;
+  // 穿戴的配饰, 按照1~5的顺序存放
+  repeated uint32 ornaments = 5;
+  // 激活的佩饰套装id
+  uint32 ornamentSuitId = 6;
+  // 激活的佩饰套装技能
+  repeated uint32 ornamentSkills = 7;
+  // 加点属性
+  repeated AttrPair apAttrs = 8;
+  // 可用的潜能点
+  uint32 potential = 9;
+  // 修炼属性
+  repeated AttrPair xlAttrs = 10;
+  // 修炼等级
+  uint32 xlLevel = 11;
+  uint32 xlLevelMax = 12;
+  // 修正属性
+  repeated AttrPair fixAttrs = 13;
+  // 转生记录，使用回梦丹可以修改
+  repeated ReliveRecord relives = 14;
+  // 属性
+  repeated AttrPair attrs = 15;
+}
+message ReliveRecord {
+  Race race = 1;
+  Sex sex = 2;
+}
+
+enum PetQuality {
+  // 资质平平
+  PetQuality_ZiZhiPingPing = 0;
+  // 出类拔萃
+  PetQuality_ChuLeiBaCui = 1;
+  // 妙领天机
+  PetQuality_MiaoLingTianJi = 2;
+  // 万中无一
+  PetQuality_WanZhongWuYi = 3;
+}
+
+// 宠物数据
+message PetData {
+  uint32 id = 1;
+  uint32 cfgId = 2;
+  string name = 3;
+  uint32 relive = 4;
+  uint32 level = 5;
+  uint64 exp = 6;
+  uint64 expMax = 7;
+
+  uint32 hp = 8;
+  uint32 hpMax = 9;
+  uint32 mp = 10;
+  uint32 mpMax = 11;
+  uint32 atk = 12;
+  uint32 atkMax = 13;
+  int32 spd = 14;
+  int32 spdMax = 15;
+  uint32 rate = 16; // 成长率, 以万为基数
+  uint32 rateMax = 17;//最大成长率
+
+  SkillId jxSkill = 18; // 觉醒技能
+  uint32 jxLevel = 19; // 觉醒等级
+
+  uint32 intimacy = 20;  //亲密度
+  uint32 keel = 21;   // 龙骨
+  uint32 maxSkillNum = 22; // 当前能学习的最大技能数量
+  repeated PetSkillData skills = 23;   // 技能列表
+  SkillId ssSkill = 24; // 飞升技能
+  uint32 fly = 25; // %10表示飞升次数, /10表示飞升增加的属性 1hp 2mp 3atk 4spd
+  int32 color = 26; // 变色(-1:变色未成功，0:未变色, >0变色结果)
+  bool active = 27;  // 当前是否参战
+  uint32 score = 28;  // 评分
+  PetQuality quality = 29; //品级
+
+  uint32 potential = 30;   // 剩余潜能
+  repeated AttrPair apAttrs = 31;   // 加点属性
+
+  uint32 refineLevel = 34; // 修炼等级
+  uint32 refineExp = 35; //当前修炼经验
+  uint32 refineExpMax = 36; //当前最大修炼经验值
+  repeated AttrPair refineAttrs = 37; // 修炼属性
+
+  repeated AttrPair attrs = 40;
+
+  uint32 autoSkill = 50; //自动技能
+}
+
+message PetSkillData {
+  SkillId id = 1;
+  bool unlock = 2; //是否已解锁
+  bool lock = 3; //是否已锁定
+}
+
+message PetWashData {
+  uint32 hp = 1;
+  uint32 hpMax = 2;
+  uint32 mp = 3;
+  uint32 mpMax = 4;
+  uint32 atk = 5;
+  uint32 atkMax = 6;
+  int32 spd = 7;
+  int32 spdMax = 8;
+  uint32 rate = 9;
+  uint32 rateMax = 10;
+  uint32 score = 11;  // 评分
+  PetQuality quality = 12; //品级
+}
+
+message MountSkillData {
+  uint32 cfgId = 1;
+  uint32 exp = 2;
+  uint32 expMax = 3;
+  int32 level = 4; //等级, 0表示低级，1表示高级
+  repeated AttrPair attrs = 5;
+}
+
+message MountWashData {
+  uint32 rate = 1;
+  uint32 rateMax = 2;
+  int32 spd = 3;
+  repeated MountSkillData skills = 4;
+  uint32 score = 10;  // 评分
+}
+
+// 坐骑数据
+message MountData {
+  uint32 id = 1;
+  uint32 cfgId = 2;
+  string name = 3;
+  uint32 level = 4;
+  uint64 exp = 5;
+  uint64 expMax = 6;
+  uint32 hp = 7;
+  int32 spd = 8;
+  uint32 rate = 9; // 成长率, 以万为基数
+  uint32 rateMax = 10;//最大成长率
+  repeated MountSkillData skills = 11;
+  repeated uint32 pets = 12;
+  uint32 score = 13;  // 评分
+  bool  active = 14;
+  bool locked = 16; // 是否已经解锁？
+  repeated AttrPair attrs = 15;
+}
+
+// 伙伴数据
+message PartnerData {
+  uint32 id = 1;
+  uint32 cfgId = 2;
+  uint32 relive = 3;
+  uint32 level = 4;
+  uint64 exp = 5;
+  uint64 expMax = 6;
+  repeated uint32 skills = 7;
+  repeated uint32 profics = 8;
+  repeated AttrPair attrs = 9;
+  uint32 pos = 10;
+}
+
+// 帮会
+message SectData {
+  uint32 id = 1;
+  string name = 2;
+  string desc = 3;
+  uint32 total = 4; //人数
+  uint32 ownerId = 5;//帮主角色id
+  string ownerName = 6;//帮主昵称,
+  uint32 contrib = 7;
+  uint32 createTime = 8; //创建时间
+}
+
+// 帮会成员
+message SectMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 relive = 3;
+  uint32 level = 4;
+  uint32 cfgId = 5;
+  bool  online = 6;
+  uint32 contrib = 7;
+  SectMemberType type = 8;
+  uint32 joinTime = 9;
+  repeated int32 skins = 10; //皮肤外观配置
+  MapObjectEquipData weapon = 11; // 武器
+  MapObjectEquipData wing = 12; // 翅膀
+}
+
+// 帮会成员类型
+enum SectMemberType {
+  // 帮众
+  SectMemberType_Unkown = 0;
+  // 帮主
+  SectMemberType_BangZhu = 1;
+  // 副帮主
+  SectMemberType_FuBangZhu = 2;
+  // 左护法
+  SectMemberType_ZuoHuFa = 3;
+  // 右护法
+  SectMemberType_YouHuFa = 4;
+  // 长老
+  SectMemberType_ZhangLao = 5;
+  // 堂主
+  SectMemberType_TangZhu = 6;
+  // 团长
+  SectMemberType_TuanZhang = 7;
+  // 帮众
+  SectMemberType_BangZhong = 8;
+}
+
+message SectApplyJoinData {
+  uint32 roleId = 2;
+  string roleName = 3;
+  uint32 cfgId = 4;
+  uint32 relive = 5;
+  uint32 level = 6;
+}
+
+// 角色基础信息
+message RoleInfo {
+  uint32 id = 1;
+  string name = 2;
+  uint32 relive = 3;
+  uint32 level = 4;
+  uint32 cfgId = 5;
+  uint32 type = 6;
+  repeated int32 skins = 7;
+  uint32 vipLevel = 8;
+  uint32 qiegeLevel = 9; // 切割等级
+}
+
+enum TaskKind {
+  TaskKind_Unkown = 0;
+  // 剧情任务
+  TaskKind_Story = 1;
+  // 日常任务
+  TaskKind_Daily = 2;
+  // 副本任务
+  TaskKind_Instance = 3;
+}
+
+enum TaskEventType {
+  TaskEventType_Unkown = 0;
+  TaskEventType_TalkNpc = 1;
+  TaskEventType_KillNpc = 2;
+  TaskEventType_GatherNpc = 3;
+  TaskEventType_DoAction = 4;
+  TaskEventType_ArriveArea = 5;
+  TaskEventType_GiveNpcItem = 6;
+
+  TaskEventType_FailEventDead = 11;
+  TaskEventType_FailEventTimeout = 12;
+}
+
+enum TaskState {
+  TaskState_Unkown = 0;
+  // 接了这个任务
+  TaskState_Doing = 1;
+  // 完成了任务
+  TaskState_Done = 2;
+  // 失败了
+  TaskState_Faild = 3;
+  // 放弃了
+  TaskState_GiveUp = 4;
+}
+
+// 任务数据
+message TaskData {
+  uint32 id = 1;
+  repeated TaskEventData events = 2;
+}
+
+message TaskEventData {
+  TaskEventType type = 1;
+  TaskState state = 2;
+  // 和这些Npc有关系
+  repeated DynamicNpcData npcs = 3;
+  // 需要去该地方
+  uint32 mapId = 4;
+  int32 mapX = 5;
+  int32 mapY = 6;
+}
+
+message TaskFailEventData {
+  TaskEventType type = 1;
+  uint32 deadNum = 2;
+  uint32 startTime = 3;
+}
+
+message TaskPair {
+  uint32 id = 1;
+  uint32 num = 2;
+}
+
+message UintPair {
+  uint32 key = 1;
+  uint32 value = 2;
+}
+
+message FloatPair {
+  uint32 key = 1;
+  float value = 2;
+}
+
+message DynamicNpcData {
+  uint32 onlyId = 1;
+  uint32 cfgId = 2;
+}
+
+enum TeamTarget {
+  TeamTarget_Unkown = 0;
+  // 钟馗抓鬼
+  TeamTarget_ZhongKuiZhuaGui = 1;
+  // 游荡妖魔
+  TeamTarget_YouDangYaoMo = 2;
+  // 三界妖王
+  TeamTarget_SanJieYaoWang = 3;
+  // 地煞星
+  TeamTarget_DiShaXing = 4;
+  // 大雁塔
+  TeamTarget_DaYanTa = 5;
+  // 寻芳
+  TeamTarget_XunFang = 6;
+  // 地宫
+  TeamTarget_DiGong = 7;
+  // 剧情任务
+  TeamTarget_JuQingRenWu = 8;
+  // 帮战
+  TeamTarget_SectWar = 100;
+}
+
+enum TeamObjectType {
+  TeamObjectType_Unkown = 0;
+  TeamObjectType_Player = 1;
+  TeamObjectType_Partner = 2;
+}
+
+message TeamObjectData {
+  TeamObjectType type = 1;
+  uint32 onlyId = 2;
+  uint32 dbId = 3;
+  string name = 4;
+  uint32 cfgId = 7;
+  uint32 relive = 8;
+  uint32 level = 9;
+  bool  online = 10;
+  uint32 sldhScore = 11;//水路大会积分
+  uint32 sectId = 12; //所在帮派id
+  bool leave = 13; //当前是否离队
+  repeated int32 skins = 14; //皮肤外观配置
+  MapObjectEquipData weapon = 15; // 武器
+  MapObjectEquipData wing = 16; // 翅膀
+  uint32 wzzzScore = 17;//王者之战积分
+  int32 bianshen = 44; // 变身ID
+}
+
+// 队伍
+message TeamData {
+  uint32 id = 1;
+  uint32 leader = 2;
+  TeamTarget target = 3;
+  uint32 mapId = 4;
+  int32 mapX = 5;
+  int32 mapY = 6;
+  uint32 createTime = 7;
+  repeated TeamObjectData members = 10;
+  uint32 TeamMemberCount = 11;
+  uint32 sectId = 12;
+}
+
+// 申请加入队伍的数据
+message TeamApplyJoinData {
+  uint32 roleId = 2;
+  string roleName = 3;
+  uint32 cfgId = 4;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 sectId = 10; //服务端用 
+  int32 sectWarCamp = 11;
+}
+
+enum ChatMessageType {
+  ChatMessageType_Unkown = 0;
+  // 好友
+  ChatMessageType_Friend = 1;
+  // 陌生人
+  ChatMessageType_Stranger = 2;
+  // 世界
+  ChatMessageType_World = 3;
+  // 队伍
+  ChatMessageType_Team = 4;
+  // 帮派
+  ChatMessageType_Sect = 5;
+  // 系统
+  ChatMessageType_System = 6;
+  // 系统撤回
+  ChatMessageType_SystemRevoke = 7;
+  // 铃铛
+  ChatMessageType_Bell = 8;
+  // 后台铃铛
+  ChatMessageType_GmBell = 9;
+  // 弹幕
+  ChatMessageType_DanMu = 10;
+}
+
+message ChatMessage {
+  ChatMessageType type = 1;
+  string msg = 3;
+  bytes voice = 4;
+  RoleInfo from = 5;
+  uint32 to = 6;
+  uint32 teamId = 7; //发送者队伍id
+  uint32 sectId = 8; //发送者帮派id
+  SectMemberType sectJob = 9; //发送者帮派职位
+  repeated string  extras = 10; //扩展参数，用于分享
+  InBattleInfo battleInfo = 11; //战斗信息，用于观战
+  uint32 bellTimes = 12; // 铃铛播放次数
+}
+
+message ChatMessageShareEquipData {
+  uint32 id = 1;
+}
+message ChatMessageShareOrnamentData {
+  uint32 id = 1;
+}
+message ChatMessageSharePetOrnamentData {
+  uint32 id = 1;
+}
+message ChatMessageSharePetData {
+  uint32 id = 1;
+}
+
+
+enum MoneyType {
+  MoneyType_Unkown = 0;
+  // 银币
+  MoneyType_Silver = 1;
+  // 仙玉
+  MoneyType_Jade = 2;
+  // 绑定仙玉
+  MoneyType_BindJade = 3;
+  // 贡币
+  MoneyType_Contrib = 4;
+  // 水陆大会功绩
+  MoneyType_SldhGongJi = 5;
+  // 郭氏
+  MoneyType_GuoShi = 6;
+  // 王者之战积分
+  MoneyType_WzzzJiFen = 7;
+}
+enum NpcShopItemType {
+  NpcShopItemType_Normal = 0;
+  NpcShopItemType_Weapon = 1;
+}
+
+// Npc商店, 药店、装备店、杂货店、甄不亏
+message ShopItem {
+  uint32 cfgId = 1;
+  uint32 price = 2;
+  int32 num = 3; //剩余数量, -1表示无限
+  NpcShopItemType type = 4;
+  MoneyType costType = 5;
+}
+
+// 等级排行榜数据
+message LvRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 jade = 7;
+}
+
+// 富豪排行榜数据
+message JadeRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 jade = 7;
+}
+
+// 充值排行榜
+message PayRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 pay = 7;
+}
+
+// 水路大会排行榜
+message SldhRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 win = 3;
+  uint32 score = 4;
+}
+
+// 王者之战排行榜
+message WzzzRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 win = 3;
+  uint32 score = 4;
+  uint32 cfgId = 5;
+  uint32 DuanWei = 6; //段位 0青铜渣渣 1白银小虾 2黄金大侠 3钻石大神 4王者至尊
+}
+
+// 成神之路排行榜数据
+message CszlRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 layer = 7;
+}
+
+// 帮派排行榜
+message SectRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  string ownerName = 3;
+  uint32 memberNum = 4;
+  uint32 contrib = 5;
+}
+
+// 单人Pk排行榜
+message SinglePkRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 win = 3;
+  uint32 lost = 4;
+  uint32 score = 5;
+}
+
+// 大乱斗Pk排行榜
+message DaLuanDouRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 win = 3;
+  uint32 lost = 4;
+  uint32 score = 5;
+  uint32 cfgId = 6;
+}
+
+// 限时充值排行榜
+message LimitChargeRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 4;
+  uint32 level = 5;
+  uint32 pay = 6;
+}
+
+// 限时等级排行榜数据
+message LimitLvRankMemberData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 cfgId = 3;
+  uint32 relive = 5;
+  uint32 level = 6;
+  uint32 jade = 7;
+}
+
+message MailData {
+  uint32 id = 1;
+  MailType type = 2;
+  string text = 3;
+  uint32  sender = 4;
+  uint32 createTime = 5;
+  uint32 expireTime = 6;
+  repeated ItemData items = 7;
+  bool picked = 8;
+  uint32 minRelive = 9;
+  uint32 minLevel = 10;
+  uint32 maxRelive = 11;
+  uint32 maxLevel = 12;
+}
+enum MailType {
+  MailType_System = 0;
+  MailType_Sect = 1;
+}
+
+enum TitleId {
+  TitleId_Unkown = 0;
+  TitleId_GM = 1;
+  TitleId_ShuiLuZhanShen = 86;
+
+  TitleId_BangZhong = 201;
+  TitleId_TuanZhang = 202;
+  TitleId_TangZhu = 203;
+  TitleId_ZhangLao = 204;
+  TitleId_YouHuFa = 205;
+  TitleId_ZuoHuFa = 206;
+  TitleId_FuBangZhu = 207;
+  TitleId_BangZhu = 208;
+}
+
+message TitleData {
+  uint32 id = 1;
+  uint32 cfgId = 2;
+  string text = 3;
+  bool active = 4;
+  uint32 createTime = 5;
+  uint32 expireTime = 6;
+}
+
+// 摆摊
+enum MallItemKind {
+  MallItemKind_Unkown = 0;
+  // 强化材料
+  MallItemKind_QiangHuaCaiLiao = 1;
+  // 珍品装备
+  MallItemKind_ZhenPinZhuangBei = 2;
+  // 珍品宠物
+  MallItemKind_ZhenPinChongWu = 3;
+  // 药品道具
+  MallItemKind_YaoPinDaoJu = 4;
+  // 终极技能书
+  MallItemKind_ZhongJiJiNengShu = 5;
+  // 高级技能书
+  MallItemKind_GaoJiJiNengShu = 6;
+  // 普通技能书
+  MallItemKind_PuTongJiNengShu = 7;
+  // 五行天书
+  MallItemKind_WuXingTianShu = 8;
+  // 奇珍异宝
+  MallItemKind_QiZhenYiBao = 9;
+  // 元气丹
+  MallItemKind_YuanQiDan = 10;
+  // 天策符
+  MallItemKind_TianCeFu = 11;
+}
+enum MallItemType {
+  MallItemType_Item = 0;
+  MallItemType_Equip = 1;
+  MallItemType_Pet = 2;
+}
+
+enum ActivityId {
+  ActivityId_Unkown = 0;
+  // 红包
+  ActivityId_HongBao = 1;
+  // 水陆大会
+  ActivityId_ShuiLuDaHui = 2;
+  // 天降灵猴
+  ActivityId_TianJiangLingHou = 3;
+  // 甄不亏 NPC每日限购
+  ActivityId_ZhenBuKui = 4;
+  // 充值活动
+  ActivityId_ChongZhi = 5;
+  // 地煞星
+  ActivityId_DiShaXing = 6;
+  // 帮战
+  ActivityId_SectWar = 7;
+  // 骷髅王
+  ActivityId_KuLouWang = 8;
+  // 单人PK
+  ActivityId_SinglePk = 9;
+  // 神兽降临
+  ActivityId_ShenShouJiangLin = 10;
+  // 金蟾送宝
+  ActivityId_JinChanSongBao = 11;
+  // 金翅大鹏
+  ActivityId_Eagle = 12;
+  // 王者之战
+  ActivityId_WangZheZhiZhan = 13;
+  // 大乱斗
+  ActivityId_DaLuanDou = 14;
+  // 大鹏竞速
+  ActivityId_EagleRace = 15;
+}
+
+enum ActivityState {
+  ActivityState_Close = 0;
+  ActivityState_ReadyOpen = 1;
+  ActivityState_Open = 2;
+  ActivityState_ReadyClose = 3;
+}
+
+// 神兽降临--活动状态
+enum SsjlState {
+  SsjlState_Unknown = 0;
+  // 关闭
+  SsjlState_Close = 1;
+  // 报名
+  SsjlState_Sign = 2;
+  // 比赛
+  SsjlState_Fight = 3;
+}
+
+// 神兽降临--队伍信息
+message SsjlTeamData {
+  uint32 teamId = 1;
+  string name = 2;
+  uint32 leaderId = 3;
+  uint32 playerNum = 4;
+  repeated RoleInfo players = 5;
+}
+
+enum SldhState {
+  // 关闭
+  SldhState_Close = 0;
+  // 报名
+  SldhState_Sign = 1;
+  // 分配
+  SldhState_Allot = 2;
+  // 比赛
+  SldhState_Fight = 3;
+  // 结果
+  SldhState_Result = 4;
+}
+
+message SldhTeamData {
+  uint32 teamId = 1;
+  string name = 2;
+  uint32 leaderId = 3;
+  uint32 playerNum = 4;
+  repeated RoleInfo players = 5;
+  uint32 score = 6;
+  uint32 mapId = 7;
+}
+
+// 匹配的对手队伍和战况
+message SldhFightTeamData {
+  int32 win = 1;
+  int32 lose = 3;
+  int32 fightScore = 4; 
+  repeated RoleInfo members = 2;
+}
+
+enum WzzzState {
+  // 关闭
+  WzzzState_Close = 0;
+  // 报名
+  WzzzState_Sign = 1;
+  // 分配
+  WzzzState_Allot = 2;
+  // 比赛
+  WzzzState_Fight = 3;
+  // 结果
+  WzzzState_Result = 4;
+}
+
+message WzzzTeamData {
+  uint32 teamId = 1;
+  string name = 2;
+  uint32 leaderId = 3;
+  uint32 playerNum = 4;
+  repeated RoleInfo players = 5;
+  uint32 score = 6;
+  uint32 mapId = 7;
+}
+
+// 匹配的对手队伍和战况
+message WzzzFightTeamData {
+  int32 win = 1;
+  int32 lose = 3;
+  int32 fightScore = 4; 
+  repeated RoleInfo members = 2;
+}
+
+// 帮战状态
+enum SectWarState {
+  // 关闭
+  SectWarState_Close = 0;
+  // 进场阶段
+  SectWarState_Enter = 1;
+  // 比赛阶段
+  SectWarState_Fight = 2;
+}
+
+enum SectWarRoleState {
+  SectWarRoleState_Idle = 0;
+  SectWarRoleState_Battle = 1;
+  SectWarRoleState_LockArena = 2;
+  SectWarRoleState_LockDoor = 3;
+}
+
+message SectWarRoleData {
+  int32 camp = 1;
+  uint32 id = 2;
+  string name = 3;
+  uint32 team = 4;
+}
+
+message SectWarSectData {
+  uint32 id = 1;
+  string name = 2;
+  uint32 ownerId = 3;
+  uint32 contrib = 4;
+  uint32 createTime = 5;
+
+  // 阵营
+  int32 camp = 10;
+  // 当前城门体力
+  int32 doorHp = 11;
+}
+
+enum SectWarPlace {
+  // 基地
+  SectWarPlace_JiDi = 0;
+  // 比武场
+  SectWarPlace_BiWuChang = 1;
+  // 战场
+  SectWarPlace_ZhanChang = 2;
+}
+
+enum SinglePkState {
+  // 关闭
+  SinglePkState_Close = 0;
+  // 报名
+  SinglePkState_Sign = 1;
+  // 比赛
+  SinglePkState_Fight = 2;
+}
+
+enum DaLuanDouState {
+  // 关闭
+  DaLuanDouState_Close = 0;
+  // 报名
+  DaLuanDouState_Sign = 1;
+  // 比赛
+  DaLuanDouState_Fight = 2;
+}
+
+message DldTeamData {
+  uint32 teamId = 1;
+  string name = 2;
+  uint32 leaderId = 3;
+  uint32 playerNum = 4;
+  repeated RoleInfo players = 5;
+  uint32 score = 6;
+  uint32 mapId = 7;
+}
+
+// 匹配的对手队伍和战况
+message DldFightTeamData {
+  int32 win = 1;
+  int32 lose = 3;
+  int32 fightScore = 4; 
+  repeated RoleInfo members = 2;
+}
+
+message SinglePkRoleInfo {
+  RoleInfo role = 1;
+  uint32 win = 2;
+  uint32 lost = 3;
+  uint32 score = 4;
+}
+
+message DaLuanDouRoleInfo {
+  RoleInfo role = 1;
+  uint32 win = 2;
+  uint32 lost = 3;
+  uint32 score = 4;
+}
+
+enum BattleType {
+  BattleType_Normal = 0;
+  // 强制PK
+  BattleType_Force = 1;
+  // 切磋
+  BattleType_Pk = 2;
+  // 水路大会
+  BattleType_ShuiLuDaHui = 3;
+  // 天降灵猴
+  BattleType_TianJiangLingHou = 4;
+  // 皇城pk
+  BattleType_HuangChengPk = 5;
+  // 王者之战
+  BattleType_WangZheZhiZhan = 6;
+  // 帮战-比武
+  BattleType_SectWarArena = 10;
+  // 帮战-抢夺炮台
+  BattleType_SectWarCannon = 11;
+  // 帮战-攻击城门
+  BattleType_SectWarDoor = 12;
+  // 帮战-自由PK
+  BattleType_SectWarFreePk = 13;
+  // 地煞星
+  BattleType_DiShaXing = 14;
+  // 骷髅王
+  BattleType_KuLouWang = 15;
+  // 单人PK
+  BattleType_SinglePk = 16;
+  // 神兽降临
+  BattleType_ShenShouJiangLin = 17;
+  // 金蟾送宝
+  BattleType_JinChanSongBao = 18;
+  // 金翅大鹏
+  BattleType_Eagle = 19;
+  // 成神之路
+  BattleType_Cszl = 20;
+  // 大乱斗
+  BattleType_DaLuanDou = 21;
+}
+
+enum SkillId {
+  SkillId_Unkown = 0;
+
+  SkillId_JingQiBaoMan = 10;  // 用来标记孩子技能--精气爆满
+  SkillId_FanShengXiang = 11; // 用来标记孩子技能--返生香
+
+  SkillId_NormalAtk = 1001;   //普通攻击
+  SkillId_NormalDef = 1002;  //防御
+  SkillId_HeDingHongFen = 1003;  //鹤顶红粉
+  SkillId_JieDaoShaRen = 1004;  //借刀杀人
+  SkillId_MiHunZui = 1005; //迷魂醉
+  SkillId_ZuoBiShangGuan = 1006; //作壁上观
+  SkillId_WanDuGongXin = 1007; //万毒攻心
+  SkillId_ShiXinKuangLuan = 1008; //失心狂乱
+  SkillId_BaiRiMian = 1009; //百日眠
+  SkillId_SiMianChuGe = 1010; //四面楚歌
+  SkillId_LieHuoJiaoYang = 1011; //烈火骄阳
+  SkillId_FengLeiYongDong = 1012; //风雷涌动
+  SkillId_DianShanLeiMing = 1013; //电闪雷鸣
+  SkillId_JiaoLongChuHai = 1014; //蛟龙出海
+  SkillId_JiuYinChunHuo = 1015; //九阴纯火
+  SkillId_XiuLiQianKun = 1016; //袖里乾坤
+  SkillId_TianZhuDiMie = 1017; //天诛地灭
+  SkillId_JiuLongBingFeng = 1018; //九龙冰封
+  SkillId_MoShenHuTi = 1019; //魔神护体
+  SkillId_TianWaiFeiMo = 1020; //天外飞魔
+  SkillId_ShouWangShenLi = 1021; //兽王神力
+  SkillId_XiaoHunShiGu = 1022; //销魂蚀骨
+  SkillId_HanQingMoMo = 1023; //含情脉脉
+  SkillId_QianKunJieSu = 1024; //乾坤借速
+  SkillId_MoShenFuShen = 1025; //魔神附身
+  SkillId_YanLuoZhuiMing = 1026; //阎罗追命
+  SkillId_QinSiBingWu = 1027; //秦思冰雾
+  SkillId_XueShaZhiGu = 1028; //血煞之蛊
+  SkillId_LuoRiRongJin = 1029; //落日熔金
+  SkillId_ShiXinFeng = 1030; //失心疯
+  SkillId_QianNvYouHun = 1031; //倩女幽魂
+  SkillId_XiXingDaFa = 1032; //吸星大法
+  SkillId_XueHaiShenChou = 1033; //血海深仇
+  SkillId_MengPoTang = 1034; //孟婆汤
+
+  //------龙族 开始-----
+  SkillId_LingXuYuFeng = 1035; //凌虚御风
+  SkillId_FeiJuJiuTian = 1036; //飞举九天
+  SkillId_FengLeiWanYun = 1037; //风雷万钧
+  SkillId_ZhenTianDongDi = 1038; //震天动地
+  SkillId_PeiRanMoYu = 1039; //沛然莫御
+  SkillId_ZeBeiWanWu = 1040; //泽被万物
+  SkillId_BaiLangTaoTian = 1041; //白浪滔天
+  SkillId_CangHaiHengLiu = 1042; //沧海横流
+  SkillId_NiLin = 1043; //逆鳞
+  //------结束-------
+
+  SkillId_HuiHunZhiShu = 1044; //回魂之术
+  SkillId_TianHuoJiangShi = 1045; //天火降世
+  SkillId_WanQianHuaShen = 1046; //万千化身
+
+  SkillId_ZhangYinDongDu = 2001; //帐饮东都
+  SkillId_YuanQuanWanHu = 2002; //源泉万斛
+  SkillId_ShenGongGuiLi = 2003; //神工鬼力
+  SkillId_BeiDaoJianXing = 2004; //倍道兼行
+  SkillId_PanShan = 2005; //蹒跚
+  SkillId_GongXingTianFa = 2006; // 恭行天罚
+  SkillId_TianGangZhanQi = 2007; // 天罡战气
+  SkillId_XuanRen = 2008; //悬刃
+  SkillId_YiHuan = 2009; //遗患
+  SkillId_ShanXian = 2010; // 闪现
+  SkillId_FeiLongZaiTian = 2011; // 飞龙在天
+  SkillId_FeiLongZaiTianFeng = 2012; // 飞龙在天 风
+  SkillId_FeiLongZaiTianHuo = 2013; // 飞龙在天 火
+  SkillId_FeiLongZaiTianShui = 2014; // 飞龙在天 水
+  SkillId_FeiLongZaiTianLei = 2015; // 飞龙在天 雷
+
+  SkillId_YouFengLaiYi = 2016; // 有凤来仪
+  SkillId_YouFengLaiYiJin = 2017; // 有凤来仪 金
+  SkillId_YouFengLaiYiMu = 2018; // 有凤来仪 木
+  SkillId_YouFengLaiYiShui = 2019; // 有凤来仪 水
+  SkillId_YouFengLaiYiHuo = 2020; // 有凤来仪 火
+  SkillId_YouFengLaiYiTu = 2021; // 有凤来仪 土
+
+  SkillId_LiSheDaChuan = 2022; // 利涉大川
+  SkillId_QingFengFuMian = 2023; // 清风拂面
+
+  SkillId_FengJuanCanYunMain = 2024; // 风卷残云 主
+  SkillId_FengJuanCanYunLeft = 2025; // 风卷残云 左
+  SkillId_FengJuanCanYunRight = 2026; // 风卷残云 右
+  SkillId_ZhuTianMieDi= 2027; // 诛天灭地
+
+  SkillId_FenLieGongJi = 2030; // 分裂攻击
+  SkillId_TianMoJieTi = 2031; // 天魔解体
+  SkillId_FenGuangHuaYing = 2032; // 分光化影
+  SkillId_QingMianLiaoYa = 2033; // 青面獠牙
+  SkillId_XiaoLouYeKu = 2034; // 小楼夜哭
+  SkillId_GeShanDaNiu = 2035; // 隔山打牛
+
+  SkillId_HunLuan = 2036; // 混乱
+  SkillId_FengYin = 2037; // 封印
+
+  SkillId_YiChan = 2038; // 遗产
+  SkillId_XianFengDaoGu = 2039; // 仙风道骨
+
+  SkillId_HighZhangYinDongDu = 2101; //高级帐饮东都
+  SkillId_HighYuanQuanWanHu = 2102; //高级源泉万斛
+  SkillId_HighShenGongGuiLi = 2103; //高级神工鬼力
+  SkillId_HighBeiDaoJianXing = 2104; //高级倍道兼行
+  SkillId_HighPanShan = 2105; //高级蹒跚
+  SkillId_HighShanXian = 2110; // 高级闪现
+  SkillId_YinShen = 2111; // 隐身
+  SkillId_MiaoShouHuiChun = 2112; //妙手回春
+  SkillId_FenHuaFuLiu = 2113; // 分花拂柳
+  SkillId_JiRenTianXiang = 2114; // 吉人天相
+  SkillId_FuLuShuangQuan = 2115; // 福禄双全
+  SkillId_SheShengQuYi = 2116; // 舍生取义
+  SkillId_TaoMing = 2117; // 讨命
+  SkillId_BaoFu = 2118; // 报复
+
+  SkillId_WuXingXiangKe = 2120; // 五行相克 -- 用来标记五行技能
+  SkillId_ChuiJinZhuanYu = 2121; //炊金馔玉
+  SkillId_KuMuFengChun = 2122; //枯木逢春
+  SkillId_RuRenYinShui = 2123; //如人饮水
+  SkillId_FengHuoLiaoYuan = 2124; //烽火燎原
+  SkillId_XiTianJingTu = 2125; //西天净土
+
+  SkillId_HighFenLieGongJi = 2130; // 高级分裂攻击
+  SkillId_HighTianMoJieTi = 2131; // 高级天魔解体
+  SkillId_HighFenGuangHuaYing = 2132; // 高级分光化影
+  SkillId_HighQingMianLiaoYa = 2133; // 高级青面獠牙
+  SkillId_HighXiaoLouYeKu = 2134; // 高级小楼夜哭
+  SkillId_HighGeShanDaNiu = 2135; // 高级隔山打牛
+
+  SkillId_JiQiBuYi = 2136; // 击其不意
+  SkillId_PoYin = 2137; // 破隐
+
+  SkillId_WuSeWuXiang = 2200; //无色无相
+  SkillId_ZePiTianXia = 2201; //泽披天下
+  SkillId_YiHuaJieMu = 2202; //移花接木
+  SkillId_PeiYuGanLin = 2203; //沛雨甘霖
+  SkillId_YouLianMeiYin = 2204; //幽怜魅影
+  SkillId_LiuShiChiLie = 2205; //六识炽烈
+  SkillId_AnZhiJiangLin = 2206; //暗之降临
+  SkillId_FeiZhuJianYu = 2207; //飞珠溅玉
+  SkillId_HenYuFeiFei = 2208; //恨雨霏霏
+  SkillId_LuoZhiYunYan = 2209; //落纸云烟
+  SkillId_NvWaZhouNian = 2210; //女娲咒念
+  SkillId_NiuZhuanQianKun = 2211; //扭转乾坤
+  SkillId_TianJiangTuoTu = 2212; //天降脱兔
+  SkillId_PiCaoRouHou = 2213; //皮糙肉厚
+  SkillId_AnXingJiDou = 2214; //安行疾斗
+  SkillId_HuanYingLiHun = 2215; //幻影离魂
+  SkillId_FaTianXiangDi = 2216; //法天象地
+  SkillId_TuMiHuaKai = 2217; //荼蘼花开
+
+  SkillId_SuperZhangYinDongDu = 2301; //超级帐饮东都
+  SkillId_SuperYuanQuanWanHu = 2302; //超级源泉万斛
+  SkillId_SuperShenGongGuiLi = 2303; //超级神工鬼力
+  SkillId_SuperBeiDaoJianXing = 2304; //超级倍道兼行
+  SkillId_SuperShanXian = 2310; // 超级闪现
+
+  SkillId_ZiXuWuYou = 2700; // 子虚乌有
+  SkillId_HuaWu = 2701; // 化无
+  SkillId_JueJingFengSheng = 2702; // 绝境逢生
+  SkillId_DangTouBangHe = 2703; //当头棒喝
+  SkillId_JiangSi = 2704; //将死
+  SkillId_ZuoNiaoShouSan = 2705; // 作鸟兽散
+  SkillId_ChunHuiDaDi = 2706; // 春回大地
+  SkillId_ShuangGuanQiXia = 2707; // 双管齐下
+  SkillId_MingChaQiuHao = 2708; // 明察秋毫
+
+  SkillId_BingLinChengXia = 3001; //兵临城下
+  SkillId_NiePan = 3002; //涅槃
+  SkillId_QiangHuaXuanRen = 3003; //强化悬刃
+  SkillId_QiangHuaYiHuan = 3004; //强化遗患
+  SkillId_ChaoMingDianChe = 3005; //潮鸣电掣
+  SkillId_RuHuTianYi = 3006; //如虎添翼
+
+  SkillId_StealMoney = 8000; // 偷钱，天降灵猴
+
+  // 宠物 觉醒技
+  SkillId_YuanZheShangGou = 4001; // 愿者上钩
+  SkillId_HuiXinQiaoSi = 4002; // 慧心巧思
+  SkillId_TouTaoBaoLi = 4003; // 投桃报李
+  SkillId_BaDaoXiangZhu = 4004; // 拔刀相助
+  SkillId_XieFengXiYu = 4005; // 斜风细雨
+  SkillId_WuChenWuKuang = 4006; // 无嗔无狂
+  SkillId_ZhengQiLinRan = 4007; // 正气凛然
+  SkillId_WuShengFuShen = 4008; // 武圣附身
+  SkillId_ShuiKang = 4009; // 水抗
+  SkillId_HuoShuYinHua = 4010; // 火树银花
+  SkillId_DianJingZhiBi = 4011; // 点睛之笔
+  SkillId_KongMuZangHua = 4012; // 空木葬花
+  SkillId_HuaKaiErDu = 4013; // 花开二度
+  SkillId_HuangQuanYiXiao = 4014; // 黄泉一笑
+  SkillId_LongYueYuYuan = 4015; // 龙跃于渊
+  SkillId_WuXingZhouLing = 4016; // 五行咒令
+  SkillId_BaMianLingLong = 4017; // 八面玲珑
+  SkillId_FengMingYuYin = 4018; // 凤鸣余音
+  SkillId_TongChouDiKai = 4019; // 同仇敌忾
+  SkillId_DaNanBuSi = 4020; // 大难不死
+  SkillId_HaoYunLianMian = 4021; // 好运连绵
+  SkillId_WeiMingXiangJi = 4022; // 威明相济
+  SkillId_YanRanYiXiao = 4023; // 嫣然一笑
+  SkillId_QiangHuaAnXingJiDou = 4024; // 强化安行疾斗
+  SkillId_QiangHuaYouLianMeiYing = 4025; // 强化幽怜魅影
+  SkillId_QiangHuaZePiBaFang = 4026; // 强化泽披八方
+  SkillId_QiangHuaZePiTianXia = 4027; // 强化泽披天下
+  SkillId_QiangHuaMuRuQingFeng = 4028; // 强化穆如清风
+
+  //天策符技能
+  SkillId_PoJun1 = 10001; //破军 把玩 千钧
+  SkillId_PoJun2 = 10002; //破军 珍藏 千钧
+  SkillId_PoJun3 = 10003; //破军 无价 千钧
+  SkillId_NuTao1 = 10004; //怒涛 把玩 千钧
+  SkillId_NuTao2 = 10005; //怒涛 珍藏 千钧
+  SkillId_NuTao3 = 10006; //怒涛 无价 千钧
+  SkillId_QiangSanShi1 = 10007; //强三尸 把玩 千钧
+  SkillId_QiangSanShi2 = 10008; //强三尸 珍藏 千钧
+  SkillId_QiangSanShi3 = 10009; //强三尸 无价 千钧
+  SkillId_QiangGuiHuo1 = 10010; //强鬼火 把玩 千钧
+  SkillId_QiangGuiHuo2 = 10011; //强鬼火 珍藏 千钧
+  SkillId_QiangGuiHuo3 = 10012; //强鬼火 无价 千钧
+  SkillId_QiangMeiHuo1 = 10013; //强魅惑 把玩 千钧
+  SkillId_QiangMeiHuo2 = 10014; //强魅惑 珍藏 千钧
+  SkillId_QiangMeiHuo3 = 10015; //强魅惑 无价 千钧
+  SkillId_QiangYiWang1 = 10016; //强遗忘 把玩 千钧
+  SkillId_QiangYiWang2 = 10017; //强遗忘 珍藏 千钧
+  SkillId_QiangYiWang3 = 10018; //强遗忘 无价 千钧
+  SkillId_NingShen1 = 10019; //凝神 把玩 千钧
+  SkillId_NingShen2 = 10020; //凝神 珍藏 千钧
+  SkillId_NingShen3 = 10021; //凝神 无价 千钧
+  SkillId_ZhuShen1 = 10022; //诛神 把玩 千钧
+  SkillId_ZhuShen2 = 10023; //诛神 珍藏 千钧
+  SkillId_ZhuShen3 = 10024; //诛神 无价 千钧
+  SkillId_KeMu1 = 10025; //克木 把玩 千钧
+  SkillId_KeMu2 = 10026; //克木 珍藏 千钧
+  SkillId_KeMu3 = 10027; //克木 无价 千钧
+  SkillId_KeHuo1 = 10028; //克火 把玩 千钧
+  SkillId_KeHuo2 = 10029; //克火 珍藏 千钧
+  SkillId_KeHuo3 = 10030; //克火 无价 千钧
+  SkillId_KeTu1 = 10031; //克土 把玩 千钧
+  SkillId_KeTu2 = 10032; //克土 珍藏 千钧
+  SkillId_KeTu3 = 10033; //克土 无价 千钧
+  SkillId_KeJin1 = 10034; //克金 把玩 千钧
+  SkillId_KeJin2 = 10035; //克金 珍藏 千钧
+  SkillId_KeJin3 = 10036; //克金 无价 千钧
+  SkillId_KeShui1 = 10037; //克水 把玩 千钧
+  SkillId_KeShui2 = 10038; //克水 珍藏 千钧
+  SkillId_KeShui3 = 10039; //克水 无价 千钧
+  SkillId_JingMiao1 = 10040; //精妙 把玩 千钧
+  SkillId_JingMiao2 = 10041; //精妙 珍藏 千钧
+  SkillId_JingMiao3 = 10042; //精妙 无价 千钧
+  SkillId_KuRong1 = 10043; //枯荣 把玩 千钧
+  SkillId_KuRong2 = 10044; //枯荣 珍藏 千钧
+  SkillId_KuRong3 = 10045; //枯荣 无价 千钧
+  SkillId_SanShiBao1 = 10046; //三尸暴 把玩 千钧
+  SkillId_SanShiBao2 = 10047; //三尸暴 珍藏 千钧
+  SkillId_SanShiBao3 = 10048; //三尸暴 无价 千钧
+  SkillId_GuiHuoBao1 = 10049; //鬼火暴 把玩 千钧
+  SkillId_GuiHuoBao2 = 10050; //鬼火暴 珍藏 千钧
+  SkillId_GuiHuoBao3 = 10051; //鬼火暴 无价 千钧
+  SkillId_HuWang1 = 10052; //忽忘 把玩 千钧
+  SkillId_HuWang2 = 10053; //忽忘 珍藏 千钧
+  SkillId_HuWang3 = 10054; //忽忘 无价 千钧
+  SkillId_QiangMei1 = 10055; //强魅 把玩 千钧
+  SkillId_QiangMei2 = 10056; //强魅 珍藏 千钧
+  SkillId_QiangMei3 = 10057; //强魅 无价 千钧
+  SkillId_ZaiChen1 = 10058; //载沉 把玩 千钧
+  SkillId_ZaiChen2 = 10059; //载沉 珍藏 千钧
+  SkillId_ZaiChen3 = 10060; //载沉 无价 千钧
+  SkillId_GongXin1 = 10061; //攻心 把玩 千钧
+  SkillId_GongXin2 = 10062; //攻心 珍藏 千钧
+  SkillId_GongXin3 = 10063; //攻心 无价 千钧
+  SkillId_DuiYue1 = 10064; //堆月 把玩 千钧
+  SkillId_DuiYue2 = 10065; //堆月 珍藏 千钧
+  SkillId_DuiYue3 = 10066; //堆月 无价 千钧
+  SkillId_YinXue1 = 10067; //饮血 把玩 千钧
+  SkillId_YinXue2 = 10068; //饮血 珍藏 千钧
+  SkillId_YinXue3 = 10069; //饮血 无价 千钧
+  SkillId_QianRen1 = 10070; //千刃 把玩 千钧
+  SkillId_QianRen2 = 10071; //千刃 珍藏 千钧
+  SkillId_QianRen3 = 10072; //千刃 无价 千钧
+  SkillId_SanShiGongXin1 = 10073; //三尸攻心 把玩 千钧
+  SkillId_SanShiGongXin2 = 10074; //三尸攻心 珍藏 千钧
+  SkillId_SanShiGongXin3 = 10075; //三尸攻心 无价 千钧
+  SkillId_GuiHuoGongXin1 = 10076; //鬼火攻心 把玩 千钧
+  SkillId_GuiHuoGongXin2 = 10077; //鬼火攻心 珍藏 千钧
+  SkillId_GuiHuoGongXin3 = 10078; //鬼火攻心 无价 千钧
+  SkillId_WangChen1 = 10079; //忘尘 把玩 千钧
+  SkillId_WangChen2 = 10080; //忘尘 珍藏 千钧
+  SkillId_WangChen3 = 10081; //忘尘 无价 千钧
+  SkillId_QiDingCangHai1 = 10082; //气定沧海 把玩 千钧
+  SkillId_QiDingCangHai2 = 10083; //气定沧海 珍藏 千钧
+  SkillId_QiDingCangHai3 = 10084; //气定沧海 无价 千钧
+  SkillId_JinShiWeiKai1 = 10085; //金石为开 把玩 千钧
+  SkillId_JinShiWeiKai2 = 10086; //金石为开 珍藏 千钧
+  SkillId_JinShiWeiKai3 = 10087; //金石为开 无价 千钧
+  SkillId_FeiHuaJianYv1 = 10088; //飞花贱玉 把玩 千钧
+  SkillId_FeiHuaJianYv2 = 10089; //飞花贱玉 珍藏 千钧
+  SkillId_FeiHuaJianYv3 = 10090; //飞花贱玉 无价 千钧
+  SkillId_HaoQiLingXiao1 = 10091; //浩气凌霄 把玩 千钧
+  SkillId_HaoQiLingXiao2 = 10092; //浩气凌霄 珍藏 千钧
+  SkillId_HaoQiLingXiao3 = 10093; //浩气凌霄 无价 千钧
+  SkillId_MoShangKaiHua1 = 10094; //陌上开花 把玩 千钧
+  SkillId_MoShangKaiHua2 = 10095; //陌上开花 珍藏 千钧
+  SkillId_MoShangKaiHua3 = 10096; //陌上开花 无价 千钧
+  SkillId_JiShuiSanQian1 = 10097; //击水三千 把玩 千钧
+  SkillId_JiShuiSanQian2 = 10098; //击水三千 珍藏 千钧
+  SkillId_JiShuiSanQian3 = 10099; //击水三千 无价 千钧
+  SkillId_XianTingXinBu1 = 10100; //闲庭信步 把玩 千钧
+  SkillId_XianTingXinBu2 = 10101; //闲庭信步 珍藏 千钧
+  SkillId_XianTingXinBu3 = 10102; //闲庭信步 无价 千钧
+  SkillId_PoFuChenZhou1 = 10103; //破釜沉舟 把玩 千钧
+  SkillId_PoFuChenZhou2 = 10104; //破釜沉舟 珍藏 千钧
+  SkillId_PoFuChenZhou3 = 10105; //破釜沉舟 无价 千钧
+  SkillId_AnShenDingPo1 = 10106; //安神定魄 把玩 千钧
+  SkillId_AnShenDingPo2 = 10107; //安神定魄 珍藏 千钧
+  SkillId_AnShenDingPo3 = 10108; //安神定魄 无价 千钧
+  SkillId_WuXi1 = 10109; //无隙 把玩 载物
+  SkillId_WuXi2 = 10110; //无隙 珍藏 载物
+  SkillId_WuXi3 = 10111; //无隙 无价 载物
+  SkillId_TieBi1 = 10112; //铁壁 把玩 载物
+  SkillId_TieBi2 = 10113; //铁壁 珍藏 载物
+  SkillId_TieBi3 = 10114; //铁壁 无价 载物
+  SkillId_CangYi1 = 10115; //藏意 把玩 载物
+  SkillId_CangYi2 = 10116; //藏意 珍藏 载物
+  SkillId_CangYi3 = 10117; //藏意 无价 载物
+  SkillId_TongMing1 = 10118; //通明 把玩 载物
+  SkillId_TongMing2 = 10119; //通明 珍藏 载物
+  SkillId_TongMing3 = 10120; //通明 无价 载物
+  SkillId_YiQi1 = 10121; //意气 把玩 载物
+  SkillId_YiQi2 = 10122; //意气 珍藏 载物
+  SkillId_YiQi3 = 10123; //意气 无价 载物
+  SkillId_QianGuang1 = 10124; //乾光 把玩 载物
+  SkillId_QianGuang2 = 10125; //乾光 珍藏 载物
+  SkillId_QianGuang3 = 10126; //乾光 无价 载物
+  SkillId_JinGang1 = 10127; //金刚 把玩 载物
+  SkillId_JinGang2 = 10128; //金刚 珍藏 载物
+  SkillId_JinGang3 = 10129; //金刚 无价 载物
+  SkillId_JueXing1 = 10130; //觉醒 把玩 载物
+  SkillId_JueXing2 = 10131; //觉醒 珍藏 载物
+  SkillId_JueXing3 = 10132; //觉醒 无价 载物
+  SkillId_DuE1 = 10133; //度厄 把玩 载物
+  SkillId_DuE2 = 10134; //度厄 珍藏 载物
+  SkillId_DuE3 = 10135; //度厄 无价 载物
+  SkillId_LianHua1 = 10136; //莲华 把玩 载物
+  SkillId_LianHua2 = 10137; //莲华 珍藏 载物
+  SkillId_LianHua3 = 10138; //莲华 无价 载物
+  SkillId_NianHua1 = 10139; //拈花 把玩 载物
+  SkillId_NianHua2 = 10140; //拈花 珍藏 载物
+  SkillId_NianHua3 = 10141; //拈花 无价 载物
+  SkillId_MingJing1 = 10142; //明镜 把玩 载物
+  SkillId_MingJing2 = 10143; //明镜 珍藏 载物
+  SkillId_MingJing3 = 10144; //明镜 无价 载物
+  SkillId_QingMing1 = 10145; //清明 把玩 载物
+  SkillId_QingMing2 = 10146; //清明 珍藏 载物
+  SkillId_QingMing3 = 10147; //清明 无价 载物
+  SkillId_ChenZhuo1 = 10148; //沉着 把玩 载物
+  SkillId_ChenZhuo2 = 10149; //沉着 珍藏 载物
+  SkillId_ChenZhuo3 = 10150; //沉着 无价 载物
+  SkillId_QiangXin1 = 10151; //强心 把玩 载物
+  SkillId_QiangXin2 = 10152; //强心 珍藏 载物
+  SkillId_QiangXin3 = 10153; //强心 无价 载物
+  SkillId_ChengLuan1 = 10154; //乘鸾 把玩 载物
+  SkillId_ChengLuan2 = 10155; //乘鸾 珍藏 载物
+  SkillId_ChengLuan3 = 10156; //乘鸾 无价 载物
+  SkillId_YvFeng1 = 10157; //御风 把玩 载物
+  SkillId_YvFeng2 = 10158; //御风 珍藏 载物
+  SkillId_YvFeng3 = 10159; //御风 无价 载物
+  SkillId_ChongGuan1 = 10160; //冲冠 把玩 载物
+  SkillId_ChongGuan2 = 10161; //冲冠 珍藏 载物
+  SkillId_ChongGuan3 = 10162; //冲冠 无价 载物
+  SkillId_HuoXue1 = 10163; //活血 把玩 载物
+  SkillId_HuoXue2 = 10164; //活血 珍藏 载物
+  SkillId_HuoXue3 = 10165; //活血 无价 载物
+  SkillId_ChengTianZaiWu1 = 10166; //承天载物 把玩 载物
+  SkillId_ChengTianZaiWu2 = 10167; //承天载物 珍藏 载物
+  SkillId_ChengTianZaiWu3 = 10168; //承天载物 无价 载物
+  SkillId_HuiFengLuoYan1 = 10169; //回风落雁 把玩 载物
+  SkillId_HuiFengLuoYan2 = 10170; //回风落雁 珍藏 载物
+  SkillId_HuiFengLuoYan3 = 10171; //回风落雁 无价 载物
+  SkillId_MingJianWanLi1 = 10172; //明鉴万里 把玩 载物
+  SkillId_MingJianWanLi2 = 10173; //明鉴万里 珍藏 载物
+  SkillId_MingJianWanLi3 = 10174; //明鉴万里 无价 载物
+  SkillId_JinChanTuoQiao1 = 10175; //金蝉脱壳 把玩 载物
+  SkillId_JinChanTuoQiao2 = 10176; //金蝉脱壳 珍藏 载物
+  SkillId_JinChanTuoQiao3 = 10177; //金蝉脱壳 无价 载物
+  SkillId_MengGong1 = 10178; //猛攻 把玩 御兽
+  SkillId_MengGong2 = 10179; //猛攻 珍藏 御兽
+  SkillId_MengGong3 = 10180; //猛攻 无价 御兽
+  SkillId_KanPo1 = 10181; //看破 把玩 御兽
+  SkillId_KanPo2 = 10182; //看破 珍藏 御兽
+  SkillId_KanPo3 = 10183; //看破 无价 御兽
+  SkillId_JingZhun1 = 10184; //精准 把玩 御兽
+  SkillId_JingZhun2 = 10185; //精准 珍藏 御兽
+  SkillId_JingZhun3 = 10186; //精准 无价 御兽
+  SkillId_XiXue1 = 10187; //吸血 把玩 御兽
+  SkillId_XiXue2 = 10188; //吸血 珍藏 御兽
+  SkillId_XiXue3 = 10189; //吸血 无价 御兽
+  SkillId_CuiDu1 = 10190; //淬毒 把玩 御兽
+  SkillId_CuiDu2 = 10191; //淬毒 珍藏 御兽
+  SkillId_CuiDu3 = 10192; //淬毒 无价 御兽
+  SkillId_PaoXiao1 = 10193; //咆哮 把玩 御兽
+  SkillId_PaoXiao2 = 10194; //咆哮 珍藏 御兽
+  SkillId_PaoXiao3 = 10195; //咆哮 无价 御兽
+  SkillId_KuangLan1 = 10196; //狂澜 把玩 御兽
+  SkillId_KuangLan2 = 10197; //狂澜 珍藏 御兽
+  SkillId_KuangLan3 = 10198; //狂澜 无价 御兽
+  SkillId_HuZhu1 = 10199; //护主 把玩 御兽
+  SkillId_HuZhu2 = 10200; //护主 珍藏 御兽
+  SkillId_HuZhu3 = 10201; //护主 无价 御兽
+  SkillId_ShengJi1 = 10202; //生机 把玩 御兽
+  SkillId_ShengJi2 = 10203; //生机 珍藏 御兽
+  SkillId_ShengJi3 = 10204; //生机 无价 御兽
+  SkillId_QianMian1 = 10205; //千面 把玩 御兽
+  SkillId_QianMian2 = 10206; //千面 珍藏 御兽
+  SkillId_QianMian3 = 10207; //千面 无价 御兽
+  SkillId_HuWei1 = 10208; //虎威 把玩 御兽
+  SkillId_HuWei2 = 10209; //虎威 珍藏 御兽
+  SkillId_HuWei3 = 10210; //虎威 无价 御兽
+  SkillId_LianXi1 = 10211; //敛息 把玩 御兽
+  SkillId_LianXi2 = 10212; //敛息 珍藏 御兽
+  SkillId_LianXi3 = 10213; //敛息 无价 御兽
+  SkillId_BiYou1 = 10214; //庇佑 把玩 御兽
+  SkillId_BiYou2 = 10215; //庇佑 珍藏 御兽
+  SkillId_BiYou3 = 10216; //庇佑 无价 御兽
+  SkillId_HuiGen1 = 10217; //慧根 把玩 御兽
+  SkillId_HuiGen2 = 10218; //慧根 珍藏 御兽
+  SkillId_HuiGen3 = 10219; //慧根 无价 御兽
+  SkillId_QingLan1 = 10220; //青岚 把玩 御兽
+  SkillId_QingLan2 = 10221; //青岚 珍藏 御兽
+  SkillId_QingLan3 = 10222; //青岚 无价 御兽
+  SkillId_GuBen1 = 10223; //固本 把玩 御兽
+  SkillId_GuBen2 = 10224; //固本 珍藏 御兽
+  SkillId_GuBen3 = 10225; //固本 无价 御兽
+  SkillId_NuJi1 = 10226; //怒击 把玩 御兽
+  SkillId_NuJi2 = 10227; //怒击 珍藏 御兽
+  SkillId_NuJi3 = 10228; //怒击 无价 御兽
+  SkillId_QiJi1 = 10229; //气集 把玩 御兽
+  SkillId_QiJi2 = 10230; //气集 珍藏 御兽
+  SkillId_QiJi3 = 10231; //气集 无价 御兽
+  SkillId_LongHunYingTi1 = 10232; //龙魂萦体 把玩 御兽
+  SkillId_LongHunYingTi2 = 10233; //龙魂萦体 珍藏 御兽
+  SkillId_LongHunYingTi3 = 10234; //龙魂萦体 无价 御兽
+  SkillId_SiHaiChengFeng1 = 10235; //四海承风 把玩 御兽
+  SkillId_SiHaiChengFeng2 = 10236; //四海承风 珍藏 御兽
+  SkillId_SiHaiChengFeng3 = 10237; //四海承风 无价 御兽
+  SkillId_QianLongZaiYuan1 = 10238; //潜龙在渊 把玩 御兽
+  SkillId_QianLongZaiYuan2 = 10239; //潜龙在渊 珍藏 御兽
+  SkillId_QianLongZaiYuan3 = 10240; //潜龙在渊 无价 御兽
+  SkillId_QiangShui1 = 10241; //强水 把玩 千钧
+  SkillId_QiangShui2 = 10242; //强水 珍藏 千钧
+  SkillId_QiangShui3 = 10243; //强水 无价 千钧
+  SkillId_ShuiBao1 = 10244; //水暴 把玩 千钧
+  SkillId_ShuiBao2 = 10245; //水暴 珍藏 千钧
+  SkillId_ShuiBao3 = 10246; //水暴 无价 千钧
+  SkillId_ShuiXiGongXin1 = 10247; //水系攻心 把玩 千钧
+  SkillId_ShuiXiGongXin2 = 10248; //水系攻心 珍藏 千钧
+  SkillId_ShuiXiGongXin3 = 10249; //水系攻心 无价 千钧
+  SkillId_QiangDu1 = 10250; //强毒 把玩 千钧
+  SkillId_QiangDu2 = 10251; //强毒 珍藏 千钧
+  SkillId_QiangDu3 = 10252; //强毒 无价 千钧
+  SkillId_HuDu1 = 10253; //忽毒 把玩 千钧
+  SkillId_HuDu2 = 10254; //忽毒 珍藏 千钧
+  SkillId_HuDu3 = 10255; //忽毒 无价 千钧
+  SkillId_HuHun1 = 10256; //忽混 把玩 千钧
+  SkillId_HuHun2 = 10257; //忽混 珍藏 千钧
+  SkillId_HuHun3 = 10258; //忽混 无价 千钧
+  SkillId_HuShui1 = 10259; //忽睡 把玩 千钧
+  SkillId_HuShui2 = 10260; //忽睡 珍藏 千钧
+  SkillId_HuShui3 = 10261; //忽睡 无价 千钧
+  SkillId_HuFeng1 = 10262; //忽封 把玩 千钧
+  SkillId_HuFeng2 = 10263; //忽封 珍藏 千钧
+  SkillId_HuFeng3 = 10264; //忽封 无价 千钧
+  SkillId_HunE1 = 10265; //混噩 把玩 千钧
+  SkillId_HunE2 = 10266; //混噩 珍藏 千钧
+  SkillId_HunE3 = 10267; //混噩 无价 千钧
+  SkillId_HuoBao1 = 10268; //火暴 把玩 千钧
+  SkillId_HuoBao2 = 10269; //火暴 珍藏 千钧
+  SkillId_HuoBao3 = 10270; //火暴 无价 千钧
+  SkillId_FengBao1 = 10271; //风暴 把玩 千钧
+  SkillId_FengBao2 = 10272; //风暴 珍藏 千钧
+  SkillId_FengBao3 = 10273; //风暴 无价 千钧
+  SkillId_LeiBao1 = 10274; //雷暴 把玩 千钧
+  SkillId_LeiBao2 = 10275; //雷暴 珍藏 千钧
+  SkillId_LeiBao3 = 10276; //雷暴 无价 千钧
+  SkillId_QiangHuo1 = 10277; //强火 把玩 千钧
+  SkillId_QiangHuo2 = 10278; //强火 珍藏 千钧
+  SkillId_QiangHuo3 = 10279; //强火 无价 千钧
+  SkillId_QiangFeng1 = 10280; //强风 把玩 千钧
+  SkillId_QiangFeng2 = 10281; //强风 珍藏 千钧
+  SkillId_QiangFeng3 = 10282; //强风 无价 千钧
+  SkillId_QiangLei1 = 10283; //强雷 把玩 千钧
+  SkillId_QiangLei2 = 10284; //强雷 珍藏 千钧
+  SkillId_QiangLei3 = 10285; //强雷 无价 千钧
+  SkillId_QiangShui11 = 10286; //强睡 把玩 千钧
+  SkillId_QiangShui12 = 10287; //强睡 珍藏 千钧
+  SkillId_QiangShui13 = 10288; //强睡 无价 千钧
+  SkillId_QiangSu1 = 10289; //强速 把玩 千钧
+  SkillId_QiangSu2 = 10290; //强速 珍藏 千钧
+  SkillId_QiangSu3 = 10291; //强速 无价 千钧
+  SkillId_QiangFang1 = 10292; //强防 把玩 千钧
+  SkillId_QiangFang2 = 10293; //强防 珍藏 千钧
+  SkillId_QiangFang3 = 10294; //强防 无价 千钧
+  SkillId_QiangZhenShe1 = 10295; //强震慑 把玩 千钧
+  SkillId_QiangZhenShe2 = 10296; //强震慑 珍藏 千钧
+  SkillId_QiangZhenShe3 = 10297; //强震慑 无价 千钧
+  SkillId_QiangHun1 = 10298; //强混 把玩 千钧
+  SkillId_QiangHun2 = 10299; //强混 珍藏 千钧
+  SkillId_QiangHun3 = 10300; //强混 无价 千钧
+  SkillId_HuoXiGongXin1 = 10301; //火系攻心 把玩 千钧
+  SkillId_HuoXiGongXin2 = 10302; //火系攻心 珍藏 千钧
+  SkillId_HuoXiGongXin3 = 10303; //火系攻心 无价 千钧
+  SkillId_LeiXiGongXin1 = 10304; //雷系攻心 把玩 千钧
+  SkillId_LeiXiGongXin2 = 10305; //雷系攻心 珍藏 千钧
+  SkillId_LeiXiGongXin3 = 10306; //雷系攻心 无价 千钧
+  SkillId_MingXiang1 = 10307; //冥想 把玩 千钧
+  SkillId_MingXiang2 = 10308; //冥想 珍藏 千钧
+  SkillId_MingXiang3 = 10309; //冥想 无价 千钧
+  SkillId_KuangMo1 = 10310; //狂魔 把玩 千钧
+  SkillId_KuangMo2 = 10311; //狂魔 珍藏 千钧
+  SkillId_KuangMo3 = 10312; //狂魔 无价 千钧
+}
+
+enum SkillType {
+  SkillType_Physics = 0; //物理
+  SkillType_Chaos = 1; //混乱
+  SkillType_Toxin = 2; //毒
+  SkillType_Sleep = 3; //昏睡
+  SkillType_Seal = 4; //封印
+  SkillType_Feng = 5; //风法
+  SkillType_Huo = 6; //火法
+  SkillType_Lei = 7; //雷法
+  SkillType_Shui = 8; //水法
+  SkillType_AtkSkillMax = 9; //攻击类法术最大值
+  SkillType_Speed = 10; //加速
+  SkillType_Defense = 11; //加防
+  SkillType_Attack = 12; //加攻
+  SkillType_Frighten = 13; //震慑
+  SkillType_ThreeCorpse = 14; //三尸
+  SkillType_Charm = 15; //魅惑
+  SkillType_GhostFire = 16; //鬼火
+  SkillType_Forget = 17; //遗忘
+  SkillType_SubDefense = 18; //减防
+  SkillType_YinShen = 19; //隐身
+  SkillType_Resume = 20; //回血技能
+  SkillType_StealMoney = 21; //飞龙探云手
+  SkillType_Protect = 22; //庇护
+  SkillType_RaiseHurt = 23; //加伤害
+  SkillType_Swap = 24; //交换状态
+  SkillType_MingZhong = 25; //加命中
+  SkillType_OnlyPhysic = 26; //只能物理攻击
+  SkillType_SaoJi = 27; //扫击
+  SkillType_ZhenJi = 28; //震击
+  SkillType_BianShen = 29; //变身
+}
+
+enum SkillQuality {
+  SkillQuality_Unkown = 0;
+  SkillQuality_Low = 1; //普通技能
+  SkillQuality_High = 2; //高级技能
+  SkillQuality_Shen = 3; //神兽技能
+  SkillQuality_Final = 4; //终极技能
+}
+
+enum SkillActionType {
+  SkillActionType_Unkown = 0;
+  SkillActionType_Initiative = 1; //主动
+  SkillActionType_Passive = 2; //被动
+}
+
+enum SkillBuffType {
+  SkillBuffType_None = 0; //无buff
+  SkillBuffType_Loop = 1; //循环伤害
+  SkillBuffType_Once = 2; //一次计算
+}
+
+enum SkillTargetType {
+  SkillTargetType_All = 0;
+  SkillTargetType_Enemy = 1;
+  SkillTargetType_Self = 2;
+}
+
+enum SkillDistanceType {
+  SkillDistanceType_Normal = 0;//默认看技能属性
+  SkillDistanceType_Near = 1;//近身
+  SkillDistanceType_Far = 2;//远程
+}
+
+//特效播放位置
+enum SkillEffectPos {
+  SkillEffectPos_Body = 0;//身体上
+  SkillEffectPos_Stage = 1;//场景上
+}
+
+enum SkillAffectType {
+  SkillAffectType_Single = 0; //单体
+  SkillAffectType_Group = 1; //群攻
+}
+
+enum AttrType {
+  AttrType_Unkown = 0;
+
+  // 抗混乱
+  AttrType_DHunLuan = 1;
+  // 抗封印
+  AttrType_DFengYin = 2;
+  // 抗昏睡
+  AttrType_DHunShui = 3;
+  // 抗毒
+  AttrType_DDu = 4;
+  // 抗风
+  AttrType_DFeng = 5;
+  // 抗火
+  AttrType_DHuo = 6;
+  // 抗水
+  AttrType_DShui = 7;
+  // 抗雷
+  AttrType_DLei = 8;
+  // 抗鬼火
+  AttrType_DGuiHuo = 9;
+  // 抗遗忘
+  AttrType_DYiWang = 10;
+  // 抗三尸
+  AttrType_DSanShi = 11;
+  // 抗震慑
+  AttrType_DZhenShe = 12;
+  // 抗物理
+  AttrType_DWuLi = 13;
+
+  // 忽视抗混乱
+  AttrType_HDHunLuan = 21;
+  // 忽视抗封印
+  AttrType_HDFengYin = 22;
+  // 忽视抗昏睡
+  AttrType_HDHunShui = 23;
+  // 忽视抗毒
+  AttrType_HDDu = 24;
+  // 忽视抗风
+  AttrType_HDFeng = 25;
+  // 忽视抗火
+  AttrType_HDHuo = 26;
+  // 忽视抗水
+  AttrType_HDShui = 27;
+  // 忽视抗雷
+  AttrType_HDLei = 28;
+  // 忽视抗鬼火
+  AttrType_HDGuiHuo = 29;
+  // 忽视抗遗忘
+  AttrType_HDYiWang = 30;
+  // 忽视抗三尸
+  AttrType_HDSanShi = 31;
+  // 忽视抗震慑
+  AttrType_HDZhenShe = 32;
+  // 忽视抗物理
+  AttrType_HDWuLi = 33;
+
+  // 物理吸收
+  AttrType_PXiShou = 40;
+  // 命中
+  AttrType_PMingZhong = 41;
+  // 闪避
+  AttrType_PShanBi = 42;
+  // 连击
+  AttrType_PLianJi = 43;
+  // 连击率
+  AttrType_PLianJiLv = 44;
+  // 狂暴率
+  AttrType_PKuangBao = 45;
+  // 破防
+  AttrType_PPoFang = 46;
+  // 破防率
+  AttrType_PPoFangLv = 47;
+  // 反震
+  AttrType_PFanZhen = 48;
+  // 反震率
+  AttrType_PFanZhenLv = 49;
+
+  // 生命
+  AttrType_Hp = 50;
+  // 生命上限
+  AttrType_HpMax = 51;
+  // 魔法
+  AttrType_Mp = 52;
+  // 魔法上限
+  AttrType_MpMax = 53;
+  // 攻击
+  AttrType_Atk = 54;
+  // 速度
+  AttrType_Spd = 55;
+  // 加防
+  AttrType_ADefend = 56;
+  // 百分比加速
+  AttrType_ASpd = 57;
+  // 百分比加攻
+  AttrType_AAtk = 58;
+  // 百分比加血
+  AttrType_AHp = 59;
+  // 百分比加蓝
+  AttrType_AMp = 60;
+  // 整体 百分比 血量
+  AttrType_PHp = 62;
+  // 整体 百分比 法力
+  AttrType_PMp = 63;
+  // 整体 百分比 攻击
+  AttrType_PAtk = 64;
+  // 整体 百分比 速度
+  AttrType_PSpd = 65;
+
+  // 风狂暴
+  AttrType_KFeng = 70;
+  // 火狂暴
+  AttrType_KHuo = 71;
+  // 水狂暴
+  AttrType_KShui = 72;
+  // 雷狂暴
+  AttrType_KLei = 73;
+  // 三尸狂暴
+  AttrType_KSanShi = 74;
+  // 鬼火狂暴
+  AttrType_KGuiHuo = 75;
+  // 风狂暴率
+  AttrType_KFengLv = 76;
+  // 火狂暴率
+  AttrType_KHuoLv = 77;
+  // 水狂暴率
+  AttrType_KShuiLv = 78;
+  // 雷狂暴率
+  AttrType_KLeiLv = 79;
+  // 三尸狂暴率
+  AttrType_KSanShiLv = 80;
+  // 鬼火狂暴率
+  AttrType_KGuiHuoLv = 81;
+
+  // 金
+  AttrType_Jin = 90;
+  // 木
+  AttrType_Mu = 91;
+  // 水
+  AttrType_Shui = 92;
+  // 火
+  AttrType_Huo = 93;
+  // 土
+  AttrType_Tu = 94;
+  // 强力克金
+  AttrType_QJin = 95;
+  // 强力克木
+  AttrType_QMu = 96;
+  // 强力克水
+  AttrType_QShui = 97;
+  // 强力克火
+  AttrType_QHuo = 98;
+  // 强力克土
+  AttrType_QTu = 99;
+
+  // 加强混乱
+  AttrType_JqHunLuan = 100;
+  // 加强封印
+  AttrType_JqFengYin = 101;
+  // 加强昏睡
+  AttrType_JqHunShui = 102;
+  // 加强毒
+  AttrType_JqDu = 103;
+  // 加强风
+  AttrType_JqFeng = 104;
+  // 加强火
+  AttrType_JqHuo = 105;
+  // 加强水
+  AttrType_JqShui = 106;
+  // 加强雷
+  AttrType_JqLei = 107;
+  // 加强鬼火
+  AttrType_JqGuiHuo = 108;
+  // 加强遗忘
+  AttrType_JqYiWang = 109;
+  // 加强尸
+  AttrType_JqSanShi = 110;
+  // 加强震慑
+  AttrType_JqZhenShe = 111;
+  // 加强龙法
+  AttrType_JqLongFa = 112;
+  // 加强加速, 男魔的加速技能效果
+  AttrType_JqSpd = 113;
+  // 加强加防
+  AttrType_JqDefend = 114;
+  // 加强加攻
+  AttrType_JqAtk = 115;
+  // 加强魅惑
+  AttrType_JqMeiHuo = 116;
+  // 加强震击
+  AttrType_JqZhenJi = 117;
+  // 加强横扫
+  AttrType_JqHengSao = 118;
+  // 加强治愈
+  AttrType_JqZhiYu = 119;
+  // 加强破甲
+  AttrType_JqPoJia = 120;
+
+  // 根骨
+  AttrType_GenGu = 150;
+  // 灵性
+  AttrType_LingXing = 151;
+  // 力量
+  AttrType_LiLiang = 152;
+  // 敏捷
+  AttrType_MinJie = 153;
+
+  // 抗混冰忘睡上限
+  AttrType_KBingFengMax = 180;
+}
+
+enum WuXingType {
+  WuXingType_Unkown = 0;
+  // 金
+  WuXingType_Jin = 1;
+  // 木
+  WuXingType_Mu = 2;
+  // 水
+  WuXingType_Shui = 3;
+  // 火
+  WuXingType_Huo = 4;
+  // 土
+  WuXingType_Tu = 5;
+  // 五行
+  WuXingType_Wuxing = 6;
+}
+
+// Wrapper message for `double`.
+//
+// The JSON representation for `DoubleValue` is JSON number.
+message DoubleValue {
+  // The double value.
+  double value = 1;
+}
+
+// Wrapper message for `float`.
+//
+// The JSON representation for `FloatValue` is JSON number.
+message FloatValue {
+  // The float value.
+  float value = 1;
+}
+
+// Wrapper message for `int64`.
+//
+// The JSON representation for `Int64Value` is JSON string.
+message Int64Value {
+  // The int64 value.
+  int64 value = 1;
+}
+
+// Wrapper message for `uint64`.
+//
+// The JSON representation for `UInt64Value` is JSON string.
+message UInt64Value {
+  // The uint64 value.
+  uint64 value = 1;
+}
+
+// Wrapper message for `int32`.
+//
+// The JSON representation for `Int32Value` is JSON number.
+message Int32Value {
+  // The int32 value.
+  int32 value = 1;
+}
+
+// Wrapper message for `uint32`.
+//
+// The JSON representation for `UInt32Value` is JSON number.
+message UInt32Value {
+  // The uint32 value.
+  uint32 value = 1;
+}
+
+// Wrapper message for `bool`.
+//
+// The JSON representation for `BoolValue` is JSON `true` and `false`.
+message BoolValue {
+  // The bool value.
+  bool value = 1;
+}
+
+// Wrapper message for `string`.
+//
+// The JSON representation for `StringValue` is JSON string.
+message StringValue {
+  // The string value.
+  string value = 1;
+}
+
+// Wrapper message for `bytes`.
+//
+// The JSON representation for `BytesValue` is JSON string.
+message BytesValue {
+  // The bytes value.
+  bytes value = 1;
+}
+// 转盘奖励--物品配置
+message LuckyDrawItem {
+  // 索引
+  uint32 index = 1;
+  // 物品配置ID
+  uint32 cfgId = 2;
+  // 物品数量
+  uint32 num = 3;
+}
+// 转盘奖励--宝箱配置
+message LuckyDrawChest {
+  // 满风雨值
+  uint32 fullPoint = 1;
+  // 宠物ID
+  uint32 petCfgId = 2;
+  // 物品列表
+  repeated LuckyDrawItem itemList = 3;
+}
+// 转盘1次抽奖
+message LuckyDrawOneTurn {
+    // 物品列表
+    repeated LuckyDrawItem itemList = 1;
+    // 命中索引
+    uint32 hitIndex = 2;
+}
+// 装备属性
+message EquipProperty {
+  // 属性列表
+  repeated AttrPair list = 1;
+  // 评分
+  uint32 score = 2;
+}
+// 经验兑换潜能信息
+message ExpExchangeInfo {
+  // 需要转生等级
+  uint32 relive = 1;
+  // 需要等级
+  uint32 level = 2;
+  // 已经兑换次数
+  uint32 currentTimes = 3;
+  // 总共可兑换次数
+  uint32 totalTimes = 4;
+  // 当前兑换到的潜能
+  uint32 currentPotential = 5;
+  // 总共可以兑换的潜能
+  uint32 totalPotential = 6;
+  // 本次兑换所需经验
+  uint64 needExp = 7;
+  // 本次兑换得到潜能
+  uint32 earnPotential = 8;
+  // 当前经验
+  uint64 currentExp = 9;
+  // 积分消耗
+  uint32 cost = 10;
+}
+// 双倍经验信息
+message X2ExpInfo {
+  // 当前剩余的
+  uint32 left = 1;
+  // 当前领取的
+  uint32 current = 2;
+  // 总共可领的
+  uint32 total = 3;
+  // 点击领取的
+  uint32 getOnce = 4;
+}
+// 天策符类型
+enum TianceFuType {
+  // 未知
+  TianceFuType_Unknown = 0;
+  // 千钧
+  TianceFuType_QianQun = 1;
+  // 载物
+  TianceFuType_ZaiWu = 2;
+  // 御兽
+  TianceFuType_YueShou = 3;
+}
+// 天策符使用状态
+enum TianceFuState {
+  // 未使用
+  TianceFuState_Unknown = 0;
+  // 位置1
+  TianceFuState_POS1 = 1;
+  // 位置2
+  TianceFuState_POS2 = 2;
+  // 通用位置
+  TianceFuState_POS_COMMON = 3;
+}
+// 天策符信息
+message TianceFu {
+  // 天策符ID
+  string id = 1;
+  // 天策符类型
+  TianceFuType type = 2;
+  // 天策符名字
+  string name = 3;
+  // 天策符品阶
+  uint32 grade = 4;
+  // 加成
+  uint32 addition = 5;
+  // 技能ID
+  SkillId skillId = 6;
+  // 层数
+  uint32 tier = 7;
+  // 使用状态
+  TianceFuState state = 8;
+}
+// 物品商店--商品
+message ItemShopGood {
+  // 商品ID
+  uint32 id = 1;
+  // 物品ID
+  uint32 item = 2;
+  // 物品数量
+  uint32 num = 3;
+  // 价格（元）
+  uint32 price = 4;
+}
+// 红包--类型
+enum RedType {
+  // 未使用
+  RedType_Unknown = 0;
+  // 世界
+  RedType_World = 1;
+  // 帮派
+  RedType_Sect = 2;
+}
+// 红包--状态
+enum RedState {
+  // 未使用
+  RedState_Unknown = 0;
+  // 待抢
+  RedState_Wait = 1;
+  // 已抢
+  RedState_Done = 2;
+  // 已抢光
+  RedState_Out = 3;
+}
+// 红包--信息
+message RedItem {
+  // ID
+  uint32 id = 1;
+  // 类型
+  RedType type = 2;
+  // 祝福
+  string wish = 3;
+  // 发送角色
+  RoleInfo role = 4;
+  // 状态
+  RedState state = 5;
+}
+// 红包--领取人
+message RedGetter {
+  // 仙玉
+  uint32 jade = 1;
+  // 领取角色
+  RoleInfo role = 2;
+  // 领取时间
+  uint32 reciveTime = 3;
+}
+// 红包--历史
+message RedLog {
+  // ID
+  uint32 id = 1;
+  // 时间
+  uint32 timestamp = 2;
+  // 仙玉
+  uint32 jade = 3;
+  // 发送角色--接收角色为空
+  RoleInfo role = 4;
+}
+// 宠物配饰类型
+enum PetOrnamentTpe {
+  // 未知
+  Unknown = 0;
+  // 兽环
+  Huan = 1;
+  // 兽铃
+  Ling = 2;
+  // 兽甲
+  Jia = 3;
+}
+// 宠物配饰数据
+message PetOrnamentData {
+  // ID
+  uint32 id = 1;
+  // 类型
+  PetOrnamentTpe type = 2;
+  // 是否锁定，1未锁定，2锁定
+  uint32 locked = 3;
+  // 品阶 1把玩 2珍藏 3无价
+  uint32 grade = 4;
+  // 位置，小于0-未装备, 大于0-装备了，则为宠物ID
+  uint32 place = 5;
+  // 评分
+  uint32 score = 6;
+  // 基本属性
+  repeated AttrPair baseAttrs = 7;
+}

@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ddxy.GameServer", "Ddxy.GameServer\Ddxy.GameServer.csproj", "{40E0C214-FBC5-49B7-92DC-382E985BA1D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proto", "Proto", "{844BB0A9-CBE1-45A6-8E9E-856F769275D0}"
+	ProjectSection(SolutionItems) = preProject
+		Proto\battle.proto = Proto\battle.proto
+		Proto\common.proto = Proto\common.proto
+		Proto\game.proto = Proto\game.proto
+		Proto\internal.proto = Proto\internal.proto
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{11130A8E-8260-4D58-BBA9-4F42B3168264}"
+	ProjectSection(SolutionItems) = preProject
+		SQL\data_admin.sql = SQL\data_admin.sql
+		SQL\data_ddxy.sql = SQL\data_ddxy.sql
+		SQL\data_server.sql = SQL\data_server.sql
+		SQL\ddxy.sql = SQL\ddxy.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{FF3F3A5A-2FD6-4F80-BDBB-8CC331E7384C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ddxy.GrainInterfaces", "Libs\Ddxy.GrainInterfaces\Ddxy.GrainInterfaces.csproj", "{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ddxy.Protocol", "Libs\Ddxy.Protocol\Ddxy.Protocol.csproj", "{9031C721-1CB8-4174-B366-C10B8A133886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ddxy.Common", "Libs\Ddxy.Common\Ddxy.Common.csproj", "{DA7350BC-C6D5-47C9-8343-37EED68E87E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ddxy.GateServer", "Ddxy.GateServer\Ddxy.GateServer.csproj", "{659A4C78-D29F-4BEC-B73A-C60122D2BDF4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40E0C214-FBC5-49B7-92DC-382E985BA1D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40E0C214-FBC5-49B7-92DC-382E985BA1D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40E0C214-FBC5-49B7-92DC-382E985BA1D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40E0C214-FBC5-49B7-92DC-382E985BA1D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9031C721-1CB8-4174-B366-C10B8A133886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9031C721-1CB8-4174-B366-C10B8A133886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9031C721-1CB8-4174-B366-C10B8A133886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9031C721-1CB8-4174-B366-C10B8A133886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA7350BC-C6D5-47C9-8343-37EED68E87E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA7350BC-C6D5-47C9-8343-37EED68E87E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA7350BC-C6D5-47C9-8343-37EED68E87E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA7350BC-C6D5-47C9-8343-37EED68E87E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{659A4C78-D29F-4BEC-B73A-C60122D2BDF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{659A4C78-D29F-4BEC-B73A-C60122D2BDF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{659A4C78-D29F-4BEC-B73A-C60122D2BDF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{659A4C78-D29F-4BEC-B73A-C60122D2BDF4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5BF6534-FAB8-4C68-BC06-E48932ABB4F7} = {FF3F3A5A-2FD6-4F80-BDBB-8CC331E7384C}
+		{9031C721-1CB8-4174-B366-C10B8A133886} = {FF3F3A5A-2FD6-4F80-BDBB-8CC331E7384C}
+		{DA7350BC-C6D5-47C9-8343-37EED68E87E3} = {FF3F3A5A-2FD6-4F80-BDBB-8CC331E7384C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8345763B-92D2-4513-899F-FF35C90BB6DE}
+	EndGlobalSection
+EndGlobal

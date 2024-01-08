@@ -1,0 +1,366 @@
+syntax = "proto3";
+package xproto;
+option csharp_namespace = "Ddxy.Protocol";
+
+import "common.proto";
+
+// 本文件定义Orleans各Grain内部通讯所需的协议
+
+// 创建Npc
+message CreateNpcRequest {
+  uint32 mapId = 1;
+  int32 mapX = 2;
+  int32 mapY = 3;
+  uint32 cfgId = 4;
+  NpcOwner owner = 5;
+}
+
+// 队伍创建者接管队伍
+message TakeOverTeamRequest {
+  TeamTarget target = 1;
+  uint32 mapId = 2;
+  int32 mapX = 3;
+  int32 mapY = 4;
+  // 队长及其参战伙伴
+  repeated TeamObjectData list = 5;
+  // 帮派id, 帮战时有效
+  uint32 sectId = 6;
+}
+
+// 队长转移了新的队长来接管
+message HandOverTeamRequest {
+  uint32 roleId = 1;
+  // 队长及其参战伙伴
+  repeated TeamObjectData list = 2;
+}
+
+// 加入申请被队长通过后，队长主动加入队伍, 下发队伍当前的位置信息
+message JoinTeamResponse {
+  uint32 mapId = 1;
+  int32 mapX = 2;
+  int32 mapY = 3;
+  repeated XTaskData tasks = 4;
+}
+
+// 队长更新队伍的伙伴
+message UpdateTeamPartnerRequest {
+  repeated TeamObjectData member = 1;
+}
+
+// 队长更新任务
+message UpdateTeamTasksRequest {
+  repeated XTaskData list = 1;
+}
+
+
+// 摆摊上架商品
+message MallAddItemRequest {
+  uint32 dbId = 1; //装备实例id/宠物实例id
+  uint32 cfgId = 2; //配置id
+  uint32 price = 3;
+  uint32 num = 4;
+  MallItemType type = 5;
+  bytes details = 6; //详情
+}
+// 摆摊商城的商品被购买后通知卖方
+message OnMallItemSelledRequest {
+  uint32 id = 1;
+  MallItemType type = 2;
+  uint32 dbId = 3;
+  uint32 cfgId = 4;
+  uint32 reward = 5; //商品卖出赚到的贡币
+  uint32 num = 6; //剩余数量
+}
+// 商品下架 通知卖方
+message MallItemUnShelfRequest {
+  uint32 id = 1;
+  uint32 dbId = 2;
+  uint32 cfgId = 3;
+  uint32 price = 4;
+  uint32 num = 5; //剩余数量
+  MallItemType type = 6;
+}
+
+message TeamMoveRequest {
+  repeated TeamMoveItem list = 1;
+}
+
+message TeamMoveItem {
+  uint32 onlyId = 1;
+  int32 x = 2;
+  int32 y = 3;
+  bool blink = 4;
+}
+
+message XTaskData {
+  uint32 id = 1;
+  uint32 step = 2;
+  TaskState state = 3;
+  repeated TaskEventData events = 5;
+  repeated TaskFailEventData fails = 6;
+}
+
+// 队长发起战斗时，获得队员的角色id和有效参战的partner id集合
+message QueryTeamBattleMembersResponse {
+  repeated uint32 players = 1;
+  repeated uint32 partners = 2;
+}
+
+// PlayerGrain发起对BattleGrain的调用
+message StartBattleRequest {
+  BattleType type = 1;
+  // 来源标识
+  uint32 source = 2;
+  // 发起者角色id
+  uint32 roleId = 3;
+  // pve的monsterGroup
+  uint32 monsterGroup = 4;
+
+  // 我方
+  repeated BattleMemberData team1 = 5;
+  // 敌方
+  repeated BattleMemberData team2 = 6;
+
+  // 杀星等级
+  uint32 starLevel = 10;
+
+  // 服务器ID
+  uint32 serverId = 11;
+}
+
+// BattleGrain管PlayerGrain要参战数据
+message GetBattleMembersRequest {
+  uint32 battleId = 1;
+  BattleType battleType = 2;
+}
+
+// BattleGrain管PlayerGrain要参战数据
+message GetBattleMembersResponse {
+  // 第一个是player，第二个是参战pet，后面的是为参战的pet
+  repeated BattleMemberData list = 1;
+}
+
+// BattleGrain结束时通知PlayerGrain
+message ExitBattleRequest {
+  // 战斗id
+  uint32 id = 1;
+  BattleType type = 2;
+  uint32 source = 3;
+  uint32 monsterGroup = 4;
+  int32  win = 5; // 0-平局，1-我方胜利, -1-对方胜利
+  uint32 starLevel = 10; //杀星等级
+}
+// 战斗单元星阵属性
+message BattleXingzhenData {
+  // 星阵ID
+  int32 id = 1;
+  // 星阵等级
+  int32 level = 2;
+  // 星阵--基础属性+洗炼属性（包括等级加成后的属性）
+  repeated AttrPair attrs = 3;
+}
+// 战斗单元孩子信息
+message BattleChildInfoData {
+  // 外观
+  int32 shape = 1;
+  // 名字
+  string name = 2;
+  // 初始动画
+  string aniName = 3;
+}
+// 战斗单元孩子技能
+message BattleChildSkillData {
+  // 技能ID
+  SkillId skillId = 1;
+  // 几率
+  int32 rate = 2;
+}
+// 战斗单元天策符技能信息
+message BattleTianceSkill {
+  // 天策符技能ID
+  SkillId skillId = 1;
+  // 天策符等级
+  uint32 addition = 2;
+  // 天演策等级
+  uint32 tianYanCeLevel = 3;
+}
+message BattleMemberData {
+  LivingThingType type = 1;
+  // -1 不可登场 0 等待登场 >0 战场所在位置
+  int32 pos = 2;
+  bool  online = 3;
+  uint32 ownerId = 4; //pet/partner 所属的roleId
+  bool  catched = 5; //monster bb
+
+  uint32 id = 10;
+  uint32 cfgId = 11;
+  string name = 12;
+  uint32 res = 13;
+  uint32 relive = 14;
+  uint32 level = 15;
+  int32 petColor = 16; //宠物变色
+  uint32 color1 = 17; //人物染色1
+  uint32 color2 = 18; //人物染色2
+  uint32 money = 19;
+  MapObjectEquipData weapon = 20;   // 使用的武器
+  repeated AttrPair attrs = 21;   // AttrType->Value
+  map<uint32, uint32> skills = 22;   // 技能id->技能熟练度
+  SkillId defSkillId = 23;   // 战斗默认技能
+  uint32 skillProfic = 24; //技能熟练度,怪物伙伴需要传递
+  MapObjectEquipData wing = 25; // 佩戴的翅膀
+
+  // Pet 神兽技能
+  SkillId petSsSkill = 30;
+  // Pet 亲密度
+  uint32 petIntimacy = 31;
+  // 宠物被托管带来的坐骑技能
+  // repeated MountSkillData mountSkills = 32;
+  // 宠物的闪现顺序
+  uint32 sxOrder = 33;
+  // 宠物觉醒技能
+  SkillId petJxSkill = 34;
+  // 宠物觉醒等级
+  uint32  petJxLevel = 35;
+   // 宠物觉醒品阶，带宠物配饰套装效果？
+  uint32  petJxGrade = 36;
+
+  // 配饰技能集合
+  repeated uint32 ornamentSkills = 40;
+
+  // 种族，性别
+  Race race = 50;
+  Sex sex = 51;
+  uint32 roleType = 52;
+  // 是否开启闪现支援
+  bool shanXianOrdered = 53;
+  // 皮肤外观配置
+  repeated int32 skins = 54;
+  // 变身ID
+  int32 bianshen = 55;
+  // 战斗单元星阵属性
+  BattleXingzhenData xinzhen = 56;
+  // 战斗单元孩子信息
+  BattleChildInfoData child = 57;
+  // 战斗单元孩子技能
+  repeated BattleChildSkillData childSkills = 58;
+  // VIP等级
+  uint32 vipLevel = 59;
+  // 天策符技能列表
+  repeated BattleTianceSkill tianceSkillList = 47;
+  // 切割等级
+  uint32 qiegeLevel = 48;
+  uint32 shenzhiliHurtLevel = 49; // 神之力真是伤害等级
+}
+
+// 队伍缓存数据
+message TeamRedisData {
+  uint32 id = 1;
+  TeamTarget target = 3;
+  uint32 createTime = 4;
+  TeamObjectData leader = 5;
+  repeated TeamObjectData players = 6;
+  repeated TeamObjectData partners = 7;
+  repeated TeamApplyJoinData applies = 8;
+  repeated UintPair invitList = 9;
+  uint32 nextLeader = 10;
+
+  uint32 mapId = 20;
+  uint32 mapX = 21;
+  uint32 mapY = 22;
+  repeated Pos posList = 23;
+  bool needSyncImmediate = 24;
+}
+
+message RoleInfoList {
+  repeated RoleInfo list = 1;
+}
+
+message SectWarApproachRequest {
+  uint32 id = 1;
+  string name = 2;
+  uint32 sectId = 3;
+}
+
+message SectWarApproachResponse {
+  string error = 1;
+  uint32 sectWarId = 2;
+  int32 camp = 3;
+  SectWarPlace place = 4;
+  SectWarRoleState state = 5;
+}
+
+message QuerySectsForSectWarResponse {
+  repeated SectData list = 1;
+}
+
+message SldhActivityInfo {
+  uint32 season = 1;
+  uint32 turn = 2;
+  SldhState state = 3;
+  // 开启时间
+  uint32 openTime = 4;
+  // 分配队伍时间
+  uint32 allotTime = 5;
+  // 开始战斗时间
+  uint32 fightTime = 6;
+}
+message DaLuanDouActivityInfo {
+  uint32 season = 1;
+  uint32 turn = 2;
+  DaLuanDouState state = 3;
+  // 开启时间
+  uint32 openTime = 4;
+  // 分配队伍时间
+  uint32 allotTime = 5;
+  // 开始战斗时间
+  uint32 fightTime = 6;
+}
+//王者之战活动信息
+message WzzzActivityInfo {
+  uint32 season = 1;
+  uint32 turn = 2;
+  WzzzState state = 3;
+  // 开启时间
+  uint32 openTime = 4;
+  // 分配队伍时间
+  uint32 allotTime = 5;
+  // 开始战斗时间
+  uint32 fightTime = 6;
+}
+// 神兽降临--活动信息
+message SsjlActivityInfo {
+  // 赛季
+  uint32 season = 1;
+  // 活动状态
+  SsjlState state = 2;
+  // 开启时间
+  uint32 openTime = 3;
+  // 开始抓捕时间
+  uint32 startTime = 4;
+  // 结束抓捕时间
+  uint32 endTime = 5;
+}
+
+message SectWarActivityInfo {
+  uint32 season = 1;
+  uint32 turn = 2;
+  SectWarState state = 3;
+  // 开启时间
+  uint32 openTime = 4;
+  // 开始战斗时间
+  uint32 fightTime = 6;
+}
+
+message SinglePkActivityInfo {
+  uint32 season = 1;
+  SinglePkState state = 2;
+  // 开启时间
+  uint32 openTime = 3;
+  // 分配队伍时间
+  uint32 begineTime = 4;
+}
+
+message PreCheckHcPkResponse {
+  string  error = 1;
+  RoleInfo info = 2;
+}

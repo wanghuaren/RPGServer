@@ -1,0 +1,9 @@
+.svn
+.vs
+*/bin/*
+*/*/bin/*
+*/obj/*
+*/*/obj/*
+UpgradeLog.htm
+.vscode
+cp2use.sh
